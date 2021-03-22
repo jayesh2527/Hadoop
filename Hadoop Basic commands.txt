@@ -1,0 +1,32 @@
+
+
+   commands for hadoop
+
+----------------
+hdfs dfs -ls /
+
+hdfs dfs -ls  /user/
+hdfs dfs -mkdir /user/pradnyapatrikeyahoo/practice1
+
+hdfs dfs -put ./employee '/user/'
+
+
+hdfs dfs -ls /user/pradnyapatrikeyahoo/practice1/
+
+hdfs dfs -cat  /user/prandnyapatrikeyahoo/practice1/employee
+
+
+create student file on local system then put that into hadf practice1
+
+hdfs dfs -rm  /user/prandnyapatrikeyahoo/practice1/employee
+hdfs dfs -ls /user/pradnyapatrikeyahoo/practice1/
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,23 @@
+1)Basic prerequisite 
+
+https://www.tutorialspoint.com/unix/index.htm
+https://www.tutorialspoint.com/mysql/index.htm
+https://www.tutorialspoint.com/unix/shell_scripting.htm
+
+
+2)lab set up for Hadoop 
+
+--download 6.1 vm windows 10 64 bit
+https://www.virtualbox.org/
+
+--download qucik start zip file 
+https://downloads.cloudera.com/demo_vm/virtualbox/cloudera-quickstart-vm-5.13.0-0-virtualbox.zip
+
+
+3) Installation setps
+1) install vitual box 6.1 vm
+2) extract cloudera quickstart zip file in one location .
+3) open virtual box click on imoprt appliance select the ovf file from the cloudera quick start directory.
+4) after importing disable usb option from image setting 
+5)click to start vm
+6) username - cloudera password cloudera

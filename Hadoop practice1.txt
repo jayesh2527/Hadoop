@@ -1,0 +1,32 @@
+jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -cat /user/jayeshrasikkumaranz/simplilearn/test.txt
+sample file for testing
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -chmod 700 /user/jayeshrasikkumaranz/simplilearn/test.txt
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/simplilearn/test.txt
+-rwx------   3 jayeshrasikkumaranz hadoop         24 2021-03-17 17:00 /user/jayeshrasikkumaranz/simplilearn/test.txt
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -rm /user/jayeshrasikkumaranz/simplilearn/test.txt
+21/03/17 17:02:30 INFO fs.TrashPolicyDefault: Moved: 'hdfs://nameservice1/user/jayeshrasikkumaranz/simplilearn/test.txt' to trash at: hdfs://nameservice1/user/jayeshrasikkumaranz/.Tras
+h/Current/user/jayeshrasikkumaranz/simplilearn/test.txt
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ history
+    1  ls
+    2  hdfs dfs -mkdir /user/jayeshrasikkumaranz/pratice
+    3  hdfs dfs -ls /user/jayeshrasikkumaranz/pratice/employee
+    4  hdfs dfs -ls /user/jayeshrasikkumaranz/pratice/
+    5  vi employee
+    6  ls
+    7  ls -la
+    8   hdfs dfs -mkdir Simplilearn
+    9  vi test.txt
+   10  hdfs dfs -mkdir /user/jayeshrasikkumaranz/simplilearn
+   11  hdfs dfs -ls /user/jayeshrasikkumaranz/simplilearn
+   12  hdfs -put test.txt '/user/jayeshrasikkumaranz/simplilearn'
+   13  hdfs dfs -put test.txt '/user/jayeshrasikkumaranz/simplilearn'
+   14  hdfs dfs -cat /user/jayeshrasikkumaranz/simplilearn/test.txt
+   15  hdfs dfs -chmod 700 /user/jayeshrasikkumaranz/simplilearn/test.txt
+   16  hdfs dfs -ls /user/jayeshrasikkumaranz/simplilearn/test.txt
+   17  hdfs dfs -rm /user/jayeshrasikkumaranz/simplilearn/test.txt

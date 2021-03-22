@@ -1,0 +1,154 @@
+
+https://www.youtube.com/watch?v=CKTYPAjWIII&list=PLf0swTFhTI8qaFYQyR99wchg1Kx_BFXSg&index=7
+sqoopdb.slbdh.cloudlabs.com
+
+mysql -h sqoopdb.slbdh.cloudlabs.com -u jayeshrasikkumaranz -p
+
+MySQL [(none)]> show databases;
++---------------------+
+| Database            |
++---------------------+
+| information_schema  |
+| jayeshrasikkumaranz |
++---------------------+
+2 rows in set (0.21 sec)
+MySQL [(none)]> use jayeshrasikkumaranz;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+create table student
+(
+	rno int primary key,
+ 	name varchar(10),
+	mks int,
+	grade char(2)
+);
+
+create databse databasename;
+use databasename;
+drop database1
+
+insert into student values(5, 'Ram', 100, 'A');
+
+import --
+
+jayeshrasikkumaranz
+jayeshrasikkumaranzysxbp
+
+jayeshrasikkumaranz
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee --m 1 --target-dir /user/jayeshrasikkumaranz/practice1/
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice/student
+ls: `/user/jayeshrasikkumaranz/practice/student': No such file or directory
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice/
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz hadoop          0 2021-03-18 17:17 /user/jayeshrasikkumaranz/practice/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz hadoop         36 2021-03-18 17:17 /user/jayeshrasikkumaranz/practice/part-m-00000
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -cat /user/jayeshrasikkumaranz/practice/part-m-00000
+1,Jai,100,A
+3,raj,100,A
+5,Ram,100,A
+
+--------------
+
+DESCRIPTION
+
+Problem Statement: Using SQL and Sqoop commands, perform the below tasks:
+
+Create a database
+Create a table “employee” with the following fields: Id, Name, Salary,
+Department, and Designation
+Id is the primary key for the table
+Insert at least 5 records into the table
+Import the database and table into Sqoop
+Import only the records for which Salary is greater than 50000
+Steps to Perform:
+
+MySQL
+mysql -u labuser -p
+
+Password : simplilearn
+CREATE DATABASE userdb;
+use userdb;
+create table employee(Id INT NOT NULL, Name VARCHAR(100) NOT
+NULL, Salary INT NOT NULL,Department VARCHAR(100) NOT NULL, Designation VARCHAR(100) NOT NULL, PRIMARY KEY(Id));
+insert into employee values(201,'Peter',50000,'it','Developer');
+insert into employee values(202,'Alice',60000,'Sales','Manager');
+insert into employee values(203,'Jack',70000,'Operations','Director');
+insert into employee values(205,”John”,70000,”Support”,”Director”);
+
+Sqoop
+ 
+sqoop list-databases --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp
+sqoop list-tables --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp
+---Note directory shouldnt be exists
+IF you tried to import and directory exists then error would be logged
+21/03/20 16:48:06 ERROR tool.ImportTool: Import failed: org.apache.hadoop.mapred.FileAlreadyExistsException: Output directory hdfs://nameservice1/user/jayeshrasikkumaranz/practice3 alr
+eady exists
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee1 -m 1 --target-dir '/user/jayeshrasikkumaranz/practice3/' -m 1
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice3/
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz hadoop          0 2021-03-20 16:34 /user/jayeshrasikkumaranz/practice3/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz hadoop         94 2021-03-20 16:34 /user/jayeshrasikkumaranz/practice3/part-m-00000
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee1 -m 1 --warehouse-dir '/user/jayeshrasikkumaranz/practice4' -m 1
+
+-m 1 - map reduce, default value 4(dataa is divided mutually exclusive 4)
+
+----
+
+--delete -target -dir(Delete the import target directory if already exists)
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee1 -m 1 --warehouse-dir '/user/jayeshrasikkumaranz/practice4' -m 1 \
+--delete-target-dir 
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice4/
+Found 1 items
+drwxr-xr-x   - jayeshrasikkumaranz hadoop          0 2021-03-20 16:59 /user/jayeshrasikkumaranz/practice4/employee1
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice4/employee1/
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz hadoop          0 2021-03-20 16:59 /user/jayeshrasikkumaranz/practice4/employee1/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz hadoop         94 2021-03-20 16:59 /user/jayeshrasikkumaranz/practice4/employee1/part-m-00000
+
+Basically, to quickly run simple SQL queries against a database, we use Sqoop Eval tool in Sqoop.
+==========================================================================================================
+
+sqoop eval --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+  --query "select * from employee"
+
+sqoop eval --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+  --query "insert into employee VALUES(999, 'Flori', 9999,'Fashion', 'manager')"
+
+rm -i will ask before deleting each file. Some people will have rm aliased to do this automatically (type "alias" to check). Consider using rm -I instead, which will only ask once and only if you are trying to delete three or more files.
+rm -r will recursively delete a directory and all its contents (normally rm will not delete directories, while rmdir will only delete empty directories).
+rm -f will forcibly delete files without asking; this is mostly useful if you have rm aliased to ``rm -i'' but want to delete lots of files without confirming each one.
+
+To delete and its content
+=====================
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -rm -R /user/jayeshrasikkumaranz/practice3/
+
+Import control arguments
+============================
+--as-avrodatafile	Imports data to Avro Data Files(binary json format)
+--as-sequencefile	Imports data to SequenceFiles
+--as-textfile	Imports data as plain text (default)
+--as-parquetfile	Imports data to Parquet Files(Columnar fomrat)
+
+--boundary query and column while import to use retrieve data
+
+sqoop import \
+...
+--boundary-query "SELECT min(id), max(id) from some_table"
+--split-by id
+
+Sqoop run it mapper task by execute the SQL like SELECT * FROM table WHERE id >= low AND id < high. Sqoop uses query select minimum value for splitting, maximum value for splitting to find out boundaries for creating splits.
+ This Sqoop operation is known as Boundary Value Query.
+

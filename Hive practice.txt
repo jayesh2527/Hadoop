@@ -1,0 +1,50 @@
+https://www.youtube.com/watch?v=5Ji6YmPpwr4&list=PLf0swTFhTI8o6PhuwMO6rx4-m3CnZ7uBp
+
+github.com/dgadiraju
+
+########Load data from HDFS to hive table
+#Prepare HDFS stage directory
+#On command prompt (if you login as root)
+hadoop fs -mkdir /user/root/departments
+hadoop fs -put /tmp/departments.psv /user/root/departments
+hadoop fs -ls /user/root/departments
+#Launch hive
+hive
+use retail_ods;
+load data inpath '/user/root/departments/*' overwrite into table departments;
+hadoop fs -ls /user/root/departments
+#You will not find files
+
+CREATE DATABASE IF NOT EXISTS cards;
+CREATE TABLE deck_of_cards (
+COLOR string,
+SUIT string,
+PIP string)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+STORED AS TEXTFILE;
+
+CREATE DATABASE IF NOT EXISTS retail_ods;
+CREATE DATABASE retail_edw;
+CREATE DATABASE retail_stage;
+
+
+=
+
+mkdir -p ~/demo/data/cards
+ 22  hdfs dfs -mkdir -p ~/demo/data/cards
+   23  hdfs dfs -mkdir -p /user/jayeshrasikkumaranz/demo/data/cards
+   24  hdfs dfs -ls /user/jayeshrasikkumaranz/demo/data/cards
+   25  hdfs dfs -ls /user/jayeshrasikkumarar/
+   26  hdfs dfs -ls /user/jayeshrasikkumar/
+   27  hdfs dfs -ls /user/jayeshrasikkumaranz/
+   28  hdfs dfs -ls /user/jayeshrasikkumaranz/demo
+   29  hdfs dfs -ls /user/jayeshrasikkumaranz/demo/data/
+   30  hdfs dfs -copyFromLocal ./deckofcards.txt /user/jayeshrasikkumaranz/demo/data/cards/deckofcards.txt
+   31  cat /user/jayeshrasikkumaranz/demo/data/cards/deckofcards.txt
+   32  hdfs dfs -cat /user/jayeshrasikkumaranz/demo/data/cards/deckofcards.txt
+
+hdfs dfs -copyFromLocal ./deckofcards.txt /user/jayeshrasikkumaranz/demo/data/cards/deckofcards.txt
+
+copy the data into HIVE databae
+
+load data local inpath 'deckofcards.txt' into table deck_of_cards;

@@ -1,0 +1,67 @@
+
+We're copying file from local to HDFS a
+
+hadoop fs -fs hdfs://192.168.x.x:8020/ -put test.bin hadoopFolderName/ 
+Use of put command is to copy file from a remote location to hdfs directory. If you have to copy a file into hdfs diectory but your file is located 
+at a remote system(192.168.x.x) then you need put command instead copyFromLocal.
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -copyFromLocal ./simple.txt /user/jayeshrasikkumaranz/practice/
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ mv simple.txt bank
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 	 ./bank /user/jayeshrasikkumaranz/practice/
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ cat bank
+name|jayesh|2000
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+
+hive> create table bank
+    > (
+    > custname string, student string, salary int )
+    > row format delimited
+    > fields terminated by '|'
+    > stored as textfile;
+OK
+Time taken: 0.623 seconds
+hive> show tables;
+OK
+bank
+Time taken: 0.158 seconds, Fetched: 1 row(s)
+hive> use practice1
+    > ;
+OK
+Time taken: 0.042 seconds
+hive> create table bank
+    > (
+    > custname string, student string, salary int )
+    > row format delimited
+    > fields terminated by '|'
+    > stored as textfile;
+OK
+Time taken: 0.273 seconds
+hive> show tables;
+OK
+bank
+Time taken: 0.096 seconds, Fetched: 1 row(s)
+hive> desc bank;
+OK
+custname                string                                      
+student                 string                                      
+salary                  int                                         
+Time taken: 0.143 seconds, Fetched: 3 row(s)
+hive> 
+
+load data local inpath 'bank' into table bank;
+
+Instead of insert, we use load command to load the data into HUV database
+
+hive> load data local inpath 'bank' into table bank;
+Loading data to table practice1.bank
+OK
+Time taken: 1.25 seconds
+hive> select * from bank;
+OK
+custid  name    NULL
+101     vikram  NULL
+102     nisha   NULL
+103     ashwini NULL
+name    jayesh  2000
+Time taken: 0.769 seconds, Fetched: 5 row(s)
+hive> 

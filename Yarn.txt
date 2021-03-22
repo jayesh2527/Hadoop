@@ -1,0 +1,51 @@
+HDFS  - storing the data
+Active name node
+stand by name node
+secndary name node
+
+
+Hadoop - hadoop open source .
+
+componant in hadoop 
+hadoop 1       vs     hadoop 2 
+mapreduce            yarn ( yet another resource Negotiator 
+HDFS                 HDFS
+
+
+deamons:
+hadoop 1        hadoop 2
+Name node      name node
+data node       data node
+sceondaryname   .sceondaryname   
+node
+job tracker        resource manager
+task tracker         node manager 
+
+
+hadoop 1 -  master - slave architecture 
+single master and multiple slave (node)
+
+
+hadoop 2 - master - slave 
+multiple master (active name node & stand by name node)
+
+
+YARN - ( yet another resource Negotiator )
+resource manager
+node manager
+schedular
+application manager
+container 
+
+
+IMP link -
+https://data-flair.training/blogs/hadoop-yarn-tutorial/
+
+
+
+
+
+
+
+
+
