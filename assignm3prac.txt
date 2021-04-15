@@ -1,0 +1,126 @@
+scala> import scala.reflect.runtime.universe 
+import scala.reflect.runtime.universe
+scala> import org.apache.spark.SparkConf
+import org.apache.spark.SparkConf
+scala> import org.apache.spark.SparkContext 
+import org.apache.spark.SparkContext
+scala> import org.apache.spark.sql.DataFrame 
+import org.apache.spark.sql.DataFrame
+scala> import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.SQLContext
+scala> import org.apache.spark.sql.functions.mean
+import org.apache.spark.sql.functions.mean
+scala> val lines = sc.textFile("/user/jayeshrasikkumaranz/simplilearn/bankmarketingdata2.csv") 
+
+val lines = spark.sparkContext.textFile("/user/jayeshrasikkumaranz/simplilearn/bankmarketingdata1.csv")
+.map(_.split(","))
+.map(e⇒ employee(e(0).trim.toInt,e(1), e(2).trim.toInt))
+.toDF()
+
+
+val bankrdd=sc.textFile("/user/jayeshrasikkumaranz/simplilearn/bankmarketingdata2.csv")
+.map(_.split(";"))
+.map(e=> Bank(e(0).trim.toInt,e(1), e(2),e(3),e(4),e(5).trim.toInt,e(6),e(7),e(8),e(9).trim.toInt,e(10).e(11),e(12),e(13),e(14),e(15),e(16).trim.toInt))
+.toDF()
+
+lines: org.apache.spark.rdd.RDD[String] = /user/jayeshrasikkumaranz/simplilearn/bankmarketingdata.csv MapPartitionsRDD[1] at textFile at <console>:23
+
+println("##Get data Using collect")
+rddFromFile.collect().foreach(f=>{
+println(f)
+ })
+
+
+
+             
+scala> val bank = lines.map(x => x.split(";")) 
+bank: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[2] at map at <console>:31
+scala> val bankf = bank.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter } 
+bankf: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[3] at mapPartitionsWithIndex at <console>:31
+
+--Define Class for the schema
+case class Bank(age:Int, job:String, marital:String, education:String, deffield:String, balance:Int,
+housing:String, loan:String, contact:String, day:Int, month: String, duration:Int, campaign:Int, pdays:Int,
+previous:Int, poutcome:String, y:String) 
+
+ val bankrdd = bankf.map(
+ x => Bank(x(0).toInt
+ x(1).replaceAll("\"","")
+ ,x(2).replaceAll("\"","")
+ ,x(3).replaceAll("\"","")
+ ,x(4).replaceAll("\"","")
+ ,x(5).toInt
+ ,x(6).replaceAll("\"","")
+ ,x(7).replaceAll("\"","")
+ ,x(8).replaceAll("\"","")
+ ,x(9).toInt
+ ,x(10).replaceAll("\"","") 
+ ,x(11).toInt
+ ,x(12).toInt
+ ,x(13).toInt
+ ,x(14).toInt
+ ,x(15).replaceAll("\"","")
+ ,x(16).replaceAll("\"","")
+ )
+ )
+
+val bankrdd = sc.textFile("/user/jayeshrasikkumaranz/simplilearn/bankmarketingdata.csv").map(_.split(";")).map(x => Bank(x(0)toInt,x(1),x(2),x(3),x(4),x(5).toInt,x(6),x(7),x(8),x(9).toInt,x(10),x(11).toInt,x(12).toInt ,x(13).toInt ,x(14).toInt,x(15),x(16) ) ).toDF()
+
+bankrdd.registerTempTable("bank")
+scala> case class Bank(age:Int, job:String, marital:String, education:String, deffield:String, balance:Int,
+     | housing:String, loan:String, contact:String, day:Int, month: String, duration:Int, campaign:Int, pdays:Int,
+     | previous:Int, poutcome:String, y:String) 
+defined class Bank
+scala> val bankrdd = bankf.map(
+     |  x => Bank(x(0).toInt,
+     |  x(1).replaceAll("\"","")
+     |  ,x(2).replaceAll("\"","")
+     |  ,x(3).replaceAll("\"","")
+     |  ,x(4).replaceAll("\"","")
+     |  ,x(5).toInt
+     |  ,x(6).replaceAll("\"","")
+     |  ,x(7).replaceAll("\"","")
+     |  ,x(8).replaceAll("\"","")
+     |  ,x(9).toInt
+     |  ,x(10).replaceAll("\"","") 
+     |  ,x(11).toInt
+     |  ,x(12).toInt
+     |  ,x(13).toInt
+     |  ,x(14).toInt
+     |  ,x(15).replaceAll("\"","")
+     |  ,x(16).replaceAll("\"","")
+     |  )
+     |  )
+bankrdd: org.apache.spark.rdd.RDD[Bank] = MapPartitionsRDD[4] at map at <console>:33
+
+val allrecords = sqlContext.sql("SELeCT * FROM bank")
+
+val age = sqlContext.sql("select age, count(*) as number from bank where y='yes' group by age order by number desc ").show() 
+
+val age = sqlContext.sql("select age, count(*) as number from bank where y='yes' group by age order by number desc ").show() 
+
+val age_marital = sqlContext.sql("select age, marital, count(*) as number from bank where y='yes' group by age,marital order by number desc ").show() 
+
+val success = sqlContext.sql("select (a.subscribed/b.total)*100 as success_percent from (select count(*) as subscribed from bank where y='yes') a,(select count(*) as total from bank) b").show() 
+val failure = sqlContext.sql("select (a.not_subscribed/b.total)*100 as failure_percent from (select count(*) as not_subscribed from bank where y='no') a,(select count(*) as total from bank) b").show() 
+
+
+val a =  sqlContext.sql("select count(*) as subscribed from bank where y='yes'").show()
+val b =  sqlContext.sql("select count(*) as total from bank").show()
+
+val success = sqlContext.sql("select (a/b)*100 as success_percent from bank").show()
+
+val ageRDD = sqlContext.udf.register("ageRDD",(age:String) => {
+ if (age < "20")
+ "Teen"
+ else if (age > "20" && age <= "32")
+ "Young"
+ else if (age > "33" && age <= "55")
+ "Middle Aged"
+ else
+ "Old"
+ }) 
+
+val age_target = sqlContext.sql("select age, count(*) as number from bank_new where y='yes' group by age order by number desc ").show() 
+
+

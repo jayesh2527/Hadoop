@@ -1,0 +1,179 @@
+
+case class Bank(age:Int, job:String, marital:String, education:String, deffield:String, balance:Int,
+housing:String, loan:String, contact:String, day:Int, month: String, duration:Int, campaign:Int, pdays:Int,
+previous:Int, poutcome:String, y:String) 
+
+
+Create SQLContext Object
+Use the following command for initializing the HiveContext into the Spark Shell
+
+scala> val sqlContext = new org.apache.spark.sql.hive.HiveContext(sc)
+Create Table using HiveQL
+Use the following command for creating a table named employee with the fields id, name, and age. Here, we are using the Create statement of HiveQL syntax.
+
+scala> sqlContext.sql("CREATE TABLE IF NOT EXISTS employee(id INT, name STRING, age INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'")
+
+hive> show create table employee;
+OK
+CREATE TABLE `employee`(
+  `id` int, 
+  `name` string, 
+  `salary` float, 
+  `age` int)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+WITH SERDEPROPERTIES ( 
+  'field.delim'=',', 
+  'serialization.format'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://nameservice1/user/hive/warehouse/employee'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1617638066')
+Time taken: 0.066 seconds, Fetched: 18 row(s)
+hive> 
+
+Load Data into Table using HiveQL
+
+scala> sqlContext.sql("LOAD DATA LOCAL INPATH 'employee.txt' INTO TABLE employee")
+
+scala> val result = sqlContext.sql("FROM employee SELECT id, name, age")
+
+scala> result.show()
+Output
+<console>:26, took 0.157137 s
++------+---------+----+
+|  id  | name    |age |
++------+---------+----+
+| 1201 | Satish  | 25 |
+| 1202 | Krishna | 28 |
+| 1203 | amith   | 39 |
+| 1204 | javed   | 23 |
+| 1205 | prudvi  | 23 |
++------+---------+----+	
+
+spark.sql("LOAD DATA LOCAL INPATH 'kv1.txt' INTO TABLE src");
+
+hdfs dfs -copyFromLocal kv1.txt /user/jayeshrasikkumaranz/demo/data/cards/kv1.txt
+
+spark.sql("LOAD DATA LOCAL INPATH '/user/jayeshrasikkumaranz/demo/data/cards/kv1.txt' INTO TABLE src");
+
+
+==============
+Spark Data frame
+
+In Spark, a DataFrame is a distributed collection of data organized into named columns. 
+It is conceptually equivalent to a table in a relational database or a data frame in R/Python, but with richer optimizations under the hood.
+
+step 1:Create a DataFrame 
+import spark.implicits._
+val columns = Seq("no","Remark")
+val data = Seq(("1", "Be the change that you wish to see in the world"),
+    ("2", "Everyone thinks of changing the world, but no one thinks of changing himself."),
+    ("3", "The purpose of our lives is to be happy.")
+  )
+val df = data.toDF(columns:_*)
+df.show()
+
+scala> df.show()
++---+--------------------+
+| no|              Remark|
++---+--------------------+
+|  1|Be the change tha...|
+|  2|Everyone thinks o...|
+|  3|The purpose of ou...|
++---+--------------------+
+
+Step 2:Create a Function
+val convertCase =  (strQuote:String) => {
+    val arr = strQuote.split(" ")
+    arr.map(f=>  f.substring(0,1).toUpperCase + f.substring(1,f.length)).mkString(" ")
+}
+Step 3:Create Spark UDF to use it on DataFrame
+val convertUDF = udf(convertCase)
+df.select(col("no"), 
+    convertUDF(col("Remark")).as("Remark") ).show(false)
+
+=======
+
+Using the Reflection-Based Approach-----Inferring the Schema Using Reflection
+============================================================================================
+
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+import sqlContext.implicits._
+case class Person(name: String, age: Int)
+// Create an RDD of Person objects and register it as a table.
+val people = sc.textFile("/user/jayeshrasikkumaranz/demo/data/cards/people.txt").map(_.split(",")).map(p => Person(p(0),p(1).trim.toInt)).toDF()
+people.registerTempTable("people")
+// SQL statements can be run by using the sql methods provided by sqlContext.
+val teenagers = sqlContext.sql("SELECT name, age FROM people WHERE age >= 13 AND age <= 19")
+teenagers.map(t => "Name: " + t(0)).collect().foreach(println)
+// or by field name:
+teenagers.map(t => "Name: " + t.getAs[String]("name")).collect().foreach(println)
+// row.getValuesMap[T] retrieves multiple columns at once into a Map[String, T]
+teenagers.map(_.getValuesMap[Any](List("name", "age"))).collect().foreach(println)
+
+
+onverting Spark RDD to DataFrame and Dataset
+4 APRIL 2017
+Spark RDD -->
+            to DataFrame
+             to dataset
+
+teenagers.map(t => "Name: " + t.getAs[String]("name")).collect().foreach(println)
+
+val marital = sqlContext.sql("select marital, count(*) as number from bank where y='yes' group by marital order by number desc ").show() 
+
+===========
+
+Programmatically Specifying the Schema
+Scala
+Java
+Python
+When case classes cannot be defined ahead of time (for example, the structure of records is encoded in a string, or a text dataset will be parsed and fields will be projected differently for different users), a DataFrame can be created programmatically with three steps.
+
+Create an RDD of Rows from the original RDD;
+Create the schema represented by a StructType matching the structure of Rows in the RDD created in Step 1.
+Apply the schema to the RDD of Rows via createDataFrame method provided by SparkSession.
+For example:
+
+import org.apache.spark.sql.types._
+
+// Create an RDD
+val peopleRDD = spark.sparkContext.textFile("examples/src/main/resources/people.txt")
+
+// The schema is encoded in a string
+val schemaString = "name age"
+
+// Generate the schema based on the string of schema
+val fields = schemaString.split(" ")
+  .map(fieldName => StructField(fieldName, StringType, nullable = true))
+val schema = StructType(fields)
+
+// Convert records of the RDD (people) to Rows
+val rowRDD = peopleRDD
+  .map(_.split(","))
+  .map(attributes => Row(attributes(0), attributes(1).trim))
+
+// Apply the schema to the RDD
+val peopleDF = spark.createDataFrame(rowRDD, schema)
+
+// Creates a temporary view using the DataFrame
+peopleDF.createOrReplaceTempView("people")
+
+// SQL can be run over a temporary view created using DataFrames
+val results = spark.sql("SELECT name FROM people")
+
+// The results of SQL queries are DataFrames and support all the normal RDD operations
+// The columns of a row in the result can be accessed by field index or by field name
+results.map(attributes => "Name: " + attributes(0)).show()
+// +-------------+
+// |        value|
+// +-------------+
+// |Name: Michael|
+// |   Name: Andy|
+// | Name: Justin|
+// +-------------+

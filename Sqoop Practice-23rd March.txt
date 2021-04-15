@@ -1,0 +1,147 @@
+MySQL [(none)]> use jayeshrasikkumaranz;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+MySQL [jayeshrasikkumaranz]> show tables;
++-------------------------------+
+| Tables_in_jayeshrasikkumaranz |
++-------------------------------+
+| employee                      |
+| employee1                     |
+| product                       |
+| student                       |
+| user                          |
++-------------------------------+
+5 rows in set (0.01 sec)
+MySQL [jayeshrasikkumaranz]> create table customerdb(id varchar(3), name varchar(20), age varchar(3), salary integer(10));
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+MySQL [jayeshrasikkumaranz]> desc customer;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| id     | varchar(3)  | YES  |     | NULL    |       |
+| name   | varchar(20) | YES  |     | NULL    |       |
+| age    | varchar(3)  | YES  |     | NULL    |       |
+| salary | int         | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+
+insert into customer values(1, 'Ram', 30, '80000');
+insert into customer values(2, 'Kevin', 33, '84000');
+
+MySQL [jayeshrasikkumaranz]> show create table customer;
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------+
+| Table    | Create Table                                                                                                                                                               
+                                                  |
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------+
+| customer | CREATE TABLE `customer` (
+  `id` varchar(3) DEFAULT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  `age` varchar(3) DEFAULT NULL,
+  `salary` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------+
+1 row in set (0.01 sec)
+
+MySQL [jayeshrasikkumaranz]> select * from customer;
++------+-------+------+--------+
+| id   | name  | age  | salary |
++------+-------+------+--------+
+| 1    | Ram   | 30   |  80000 |
+| 2    | Kevin | 33   |  84000 |
++------+-------+------+--------+
+2 rows in set (0.01 sec)
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table user \
+--hive-import \
+--hive-database practice1 --hive-table user_data1 -m 1 
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table customer \
+--hive-import \
+--create-hive-table \
+--hive-table practice1.customer2 -m 1 
+
+hive> desc customers;
+OK
+age                     string                                      
+id                      string                                      
+name                    string                                      
+salary                  int                                         
+Time taken: 0.09 seconds, Fetched: 4 row(s)
+hive> show create table customers;
+OK
+CREATE TABLE `customers`(
+  `age` string, 
+  `id` string, 
+  `name` string, 
+  `salary` int)
+COMMENT 'Imported by sqoop on 2021/03/23 12:52:56'
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+WITH SERDEPROPERTIES ( 
+  'field.delim'=',', 
+  'line.delim'='\n', 
+  'serialization.format'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://nameservice1/user/hive/warehouse/practice1.db/customers'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1616503981')
+Time taken: 0.503 seconds, Fetched: 20 row(s)
+hive> 
+
+create table customerdb
+(
+ custid int, custname string, aget int,city string)
+row format delimited
+fields terminated by ','
+;
+
+load data local inpath 'customerdb' into table customerdb;
+
+create table customerdb(id varchar(3), name varchar(20), age varchar(3), city varchar(10));
+
+/user/hive/warehouse/customerdb/customerdb'
+sqoop export --connect jdbc:mysql://127.0.0.1/mooc2015 -m 1 --driver com.mysql.jdbc.Driver --table Act_Grade 
+--export-dir /apps/hive/warehouse/hactivitygrade --input-fields-terminated-by '\0001'
+
+sqoop export \
+--connect jdbc:mysql://localhost/db \
+--username root \
+--table employee \ 
+--export-dir /emp/emp_data
+
+sqoop export --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username \
+jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+--export-dir '/user/hive/warehouse/customerdb/customerdb' \
+--table customerdb -m 1 --lines-terminated-by '\n' --input-fields-terminated-by \
+',' --driver com.mysql.jdbc.Driver;
+
+load data local inpath 'customerdb' overwrite into table customerdb;
+
+Transfer the data from HDFS to SQL database
+----------------------------------------------
+
+/user/jayeshrasikkumaranz/simplilearn/movies_data.csv
+
+create table movie
+(id int primary key, moviename varchar(50), year int, rate double, view int)
+
+sqoop export --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+--export-dir '/user/jayeshrasikkumaranz/simplilearn/movies_data.csv' \
+--table movie -m 1 --lines-terminated-by '\n' --input-fields-terminated-by \
+',' --driver com.mysql.jdbc.Driver;
+
+

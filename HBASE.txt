@@ -1,0 +1,29 @@
+HBase: HBase is a top-level Apache project written in java which fulfills the need to read and write data in real-time. It provides a 
+simple interface to the distributed data. It can be accessed by Apache Hive, Apache Pig, MapReduce, and store information in HDFS.
+put ’<table name>’,’row1’,’<colfamily:colname>’,’<value>’
+
+create 'anz', 'personal', 'professional'
+
+put 'anz','1','personal:name','raju'
+
+put 'anz','1','professional:designation','manager'
+put 'anz','1','professional:salary','50000'
+
+get 'anz', 'row1', {COLUMN ⇒ 'personal:name'}
+
+hbase> get 'table name', ‘rowid’, {COLUMN ⇒ ‘column family:column name ’}
+
+
+hbase(main):026:0> get 'anz', '1'
+COLUMN                                          CELL                                                                                                                                    
+ personal:name                                  timestamp=1617120529825, value=raju                                                                                                     
+ professional:designation                       timestamp=1617120618732, value=manager                                                                                                  
+ professional:salary                            timestamp=1617120627512, value=50000                                                                                                    
+1 row(s)
+Took 0.0260 seconds                                                                                                                                                                     
+hbase(main):027:0> 
+
+hbase(main):028:0* disable 'anz'
+Took 1.2820 seconds                                                                                                                                                                     
+hbase(main):029:0> drop 'anz'
+Took 0.4370 seconds               

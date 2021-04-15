@@ -1,0 +1,28 @@
+https://www.programcreek.com/scala/org.apache.spark.graphx.Edgeo
+import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD 
+import org.apache.spark._
+
+val vertices = Array((1L,("SFO")),(2L,("ORD")),(3L,("DFW")))
+val vrdd = sc.parallelize(vertices)
+vrdd.take(1)
+
+val edges = Array(Edge(1L,2L,1800),Edge(2,3,800),Edge(3,1,1400))
+
+val eRDD = sc.parallelize(edges)
+val nowhere = "nowhere"
+
+to creat we need verices and edges
+val graph = Graph(vrdd,eRDD,nowhere)
+graph.vertices.collect.foreach(println)
+
+Edge origin id -> src(Long)
+Edge destination id -> dest(Long)
+Edge propery distance -> distance(long)
+
+graph.vertices.filter { case (id, (name, designation)) => designation.equals("Software Developer") }.collect().foreach { case (id, (name, designation)) => println(s"... Name: $name, Designation: $designation") }
+
+graph.triplets.filter(_.srcId == 2).collect().foreach { item => println("... " + item.dstAttr._1 + ", " + item.dstAttr._2) }
+
+graph.triplets.filter(_.srcId == 2).collect().foreach { item => println("... " + item.dstAttr._1 + ", " + item.dstAttr._2) }
+graph.triplets.filter(_.attr.equals("Technical Mentor")).collect().foreach { item => println("... " + item.srcAttr._1 + " mentoring " + item.dstAttr._1) }

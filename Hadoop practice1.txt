@@ -30,3 +30,8 @@ h/Current/user/jayeshrasikkumaranz/simplilearn/test.txt
    15  hdfs dfs -chmod 700 /user/jayeshrasikkumaranz/simplilearn/test.txt
    16  hdfs dfs -ls /user/jayeshrasikkumaranz/simplilearn/test.txt
    17  hdfs dfs -rm /user/jayeshrasikkumaranz/simplilearn/test.txt
+
+/user/jayeshrasikkumaranz/simplilearn/movies_data.csv
+
+create table movie
+(id int primary key, moviename varchar(50), year int, rate double, view int)

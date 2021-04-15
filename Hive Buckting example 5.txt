@@ -1,0 +1,22 @@
+create table prod_buk
+ (id int,userid string, name string,pur_yer int,pur_mon string)
+ CLUSTERED BY (pur_yer) 
+INTO 3 BUCKETS
+ row format delimited 
+fields terminated by '|'
+ stored as textfile;
+
+
+Hive>set hive.enforce.bucketing = true 
+
+insert into prod_buk
+select * from product;
+
+
+Hive>select * from prod_buk
+	where pur_year=2010 and pur_mon=‘mar’;
+
+Hive>select * from prod_buk
+	where pur_year=2011 and pur_mon=‘feb’;
+
+check warehouse location for bucketing file.

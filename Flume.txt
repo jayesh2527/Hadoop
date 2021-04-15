@@ -1,0 +1,78 @@
+put - copy file local to HDFS
+
+Apache Flume is a distributed and reliable service for efficiently collecting, aggregating, and moving large
+amounts of streaming data into the Hadoop Distributed File System (HDFS).
+It has a simple and flexible architecture which is robust and fault-tolerant based on streaming data flows.
+
+
+Apache Flume - Large amount of streaming data(log, event such as facebook, ecommerce)
+
+
+/mnt/home/jayeshrasikkumaranz/flume/conf
+
+agent1.sources = src1
+agent1.sinks = sink1
+agent.channels = ch1
+agent1.channels.ch1.type = memory
+agent1.sources.src1.type = spooldir
+agent1.sources.src1.spoolDir = /var/Flume/incoming
+agent1.sources.src1.channels = ch1
+agent1.sinks.sink1.type = hdfs
+agent1.sinks.sink1.hdfs.path = /simplilearn/logicdata
+agent1.sinks.sink1.channel = ch1
+
+# Name the components on this agent
+a1.sources = r1  
+a1.sinks = k1      
+a1.channels = c1    
+# Describe/configure the source
+a1.sources.r1.type = netcat
+a1.sources.r1.bind = localhost
+a1.sources.r1.port = 11111
+# Describe the sink
+a1.sinks.k1.type = logger
+# Use a channel which buffers events in memory
+a1.channels.c1.type = memory
+a1.channels.c1.capacity = 1000
+a1.channels.c1.transactionCapacity = 100
+# Bind the source and sink to the channel
+a1.sources.r1.channels = c1
+a1.sinks.k1.channel = c1
+
+Starting a Flume Agent
+After configuration, we have to start the Flume agent. It is done as follows −
+
+$ bin/flume-ng agent --conf ./conf/ -f conf/twitter.conf 
+Dflume.root.logger=DEBUG,console -n TwitterAgent 
+
+flume-ng agent --conf /home/jayeshrasikkumaranz/flume/conf -f ~/flume/conf/flume.conf console -n pradnya
+
+flume-ng agent --conf /home/pradyapatrikeyahoo/flume/conf -f ~/flume/conf/flume.conf console -n pradnya
+
+nc -localhost 11111
+
+
+======
+
+# Identify the components on agent pradnya
+pradnya.sources = netcat_s1
+pradnya.sinks = hdfs_w1
+pradnya.channels = in-mem_c1
+# Configure the source:
+pradnya.sources.netcat_s1.type = netcat
+pradnya.sources.netcat_s1.bind = localhost
+pradnya.sources.netcat_s1.port = 4444
+# Describe the sink:
+pradnya.sinks.hdfs_w1.type = hdfs
+pradnya.sinks.hdfs_w1.hdfs.path = /user/pradnyapatrikeyahoo/text_log_file
+pradnya.sinks.hdfs_w1.hdfs.writeFormat = Text
+pradnya.sinks.hdfs_w1.hdfs.fileType = DataStream
+pradnya.sinks.hdfs_w1.hdfs.filePrefix = 07_apr_2021
+pradnya.sinks.hdfs_w1.hdfs.fileSuffix = .txt
+# Configure a channel that buffers events in memory:
+pradnya.channels.in-mem_c1.type = memory
+pradnya.channels.in-mem_c1.capacity = 20000
+pradnya.channels.in-mem_c1.transactionCapacity = 100
+# Bind the source and sink to the channel:
+pradnya.sources.netcat_s1.channels = in-mem_c1
+pradnya.sinks.hdfs_w1.channel = in-mem_c1

@@ -1,0 +1,22 @@
+list of topics are created
+kafka-topics --list --zookeeper ip-10-0-22-235.ec2.internal:2181
+
+Create topic
+
+kafka-topics --create --zookeeper ip-10-0-22-235.ec2.internal:2181 --replication-factor 1 --partitions 1 --topic kafka_topics24425
+
+kafka-console-producer --broker-list ip-10-0-32-71.ec2.internal:9092 --topic kafka_topics24425
+
+kafka-console-consumer --bootstrap-server  ip-10-0-32-71.ec2.internal:9092  --topic kafka_topics24425 --from-beginning
+
+open spark-shell terminal 
+val df = spark.readStream.format("socket").option("host","localhost").option("port","9090").load()
+val wordsDF = df.select(explode(split(df("value")," ")).alias("word"))
+val count = wordsDF.groupBy("word").count()
+//executes below after request coming from user
+val query = count.writeStream.format("console").outputMode("complete").start().awaitTermination()
+first open terminal 
+type : nc -l -p 9090 enter 
+hi hadoop 
+spark is framework etc..
+Ctrl-c

@@ -1,4 +1,16 @@
 
+
+
+/user/hive/warhouse/table_name(Table is an HDFS directory containing zero or more files)
+
+[jayeshrasikkumaranz@ip-10-0-31-213 ~]$ hadoop fs -ls /user/hive/warehouse/practice1.db
+Found 5 items
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 14:42 /user/hive/warehouse/practice1.db/bank
+drwxrwxrwt   - pradnyapatrikeyahoo hive          0 2021-03-20 16:28 /user/hive/warehouse/practice1.db/customer
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 14:46 /user/hive/warehouse/practice1.db/icicibank
+drwxrwxrwt   - pradnyapatrikeyahoo hive          0 2021-03-22 16:00 /user/hive/warehouse/practice1.db/stud1
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 15:56 /user/hive/warehouse/practice1.db/student
+
 We're copying file from local to HDFS a
 
 hadoop fs -fs hdfs://192.168.x.x:8020/ -put test.bin hadoopFolderName/ 
@@ -28,6 +40,17 @@ hive> use practice1
     > ;
 OK
 Time taken: 0.042 seconds
+
+create table icicibank(
+  custid bigint, accountname string, accounttype string, balance bigint )
+  row format delimited
+  fields terminated by ','
+  stored as textfile;
+
+Enable column heading
+set hive.cli.print.header=true;
+
+
 hive> create table bank
     > (
     > custname string, student string, salary int )
@@ -65,3 +88,11 @@ custid  name    NULL
 name    jayesh  2000
 Time taken: 0.769 seconds, Fetched: 5 row(s)
 hive> 
+
+create table student
+(rno int, name string, mks int, grade string)
+row format delimited
+fields terminated by '|'
+ 
+hdfs dfs -copyFromLocal ./student /user/jayeshrasikkumaranz/practice/
+load data local inpath 'student' into table student;

@@ -1,0 +1,92 @@
+RDD was the primary user-facing API in Spark since its inception. At the core, an RDD is an immutable distributed collection of 
+elements of your data, partitioned across nodes in your cluster that can be operated in parallel with a low-level API that offers transformations and actions.
+5 Reasons on When to use RDDs
+You want low-level transformation and actions and control on your dataset;
+Your data is unstructured, such as media streams or streams of text;
+You want to manipulate your data with functional programming constructs than domain specific expressions;
+You don’t care about imposing a schema, such as columnar format while processing or accessing data attributes by name or column; and
+You can forgo some optimization and performance benefits available with DataFrames and Datasets for structured and semi-structured data.
+
+
+scala> val rdd1 = spark.sparkContext.parallelize(Array("jan","feb"))
+rdd1: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[0] at parallelize at <console>:23
+scala> val result = rdd1.coalesce(2)
+result: org.apache.spark.rdd.RDD[String] = CoalescedRDD[1] at coalesce at <console>:25
+
+scala> val result = rdd1.collect()
+result: Array[String] = Array(jan, feb)                                         
+scala> result.foreach(println)
+jan
+feb
+
+===Read and display the file content 
+val rdd = spark.sparkContext.textFile("/user/jayeshrasikkumaranz/simplilearn/StockPrices.csv")
+rdd.collect().foreach(println)
+
+scala> val rdd1 = sc.parallelize(List(1,2,3,4,5))                           -  Creating RDD
+
+scala> val rdd2 = rdd1.map(x => (x+3))                                      - Creating new RDD from existing RDD "Transformation"
+
+scala> rdd2.collect                                                                       - Action will show the Array(4,5,6,7,8)
+
+val rdd1 = sc.parallelize(1 to 10)
+val b = rdd1.filter(_%2==0)
+
+val b = sc.parallelize(1 to 10)
+b.groupBy(x=> {if(x%2==0) "even" else "odd"}).collect
+
+scala> b.groupBy(x=> {if(x%2==0) "even" else "odd"}).collect
+res13: Array[(String, Iterable[Int])] = Array((even,CompactBuffer(2, 4, 6, 8, 10)), (odd,CompactBuffer(1, 3, 5, 7, 9)))
+
+Word count program---https://www.javatpoint.com/apache-spark-word-count-example
+==============
+
+val inputfile = sc.textFile("input.txt")
+
+val count = inputfile.flatMap(line => line.split(" ")).map(word => (word,1)).reduceByKey(_+_);
+counts.saveAsTextFile("output")
+
+scala> val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+warning: there was one deprecation warning; re-run with -deprecation for details
+sqlContext: org.apache.spark.sql.SQLContext = org.apache.spark.sql.SQLContext@11f5a88f
+scala> import sqlContext.implicits._
+import sqlContext.implicits._
+
+val dfs = sqlContext.read.json("/user/jayeshrasikkumaranz/simplilearn/employee.json")
+/user/jayeshrasikkumaranz/simplilearn/employee.json
+
+dfs.printSchema;
+dfs.show();
+
+scala> dfs.select("name").show()
++-------+                                                                       
+|   name|
++-------+
+|   null|
+| satish|
+|krishna|
+|  amith|
+|  javed|
+| prudvi|
+|   null|
++-------+
+
+scala> dfs.groupBy("age").count().show()
++----+-----+                                                                    
+| age|count|
++----+-----+
+|  28|    1|
+|null|    2|
+|  23|    2|
+|  25|    1|
+|  39|    1|
++----+-----+
+
+scala> dfs.filter(dfs("age") > 23).show()
++---------------+---+----+-------+
+|_corrupt_record|age|  id|   name|
++---------------+---+----+-------+
+|           null| 25|1201| satish|
+|           null| 28|1202|krishna|
+|           null| 39|1203|  amith|
++---------------+---+----+-------+

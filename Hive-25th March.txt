@@ -1,0 +1,356 @@
+static partition
+--------------------------------
+We need to manually create each partition before inserting data into a partition
+
+We need to know all partitions in advance. So it is suitable for use cases where partitions are defined well ahead and are small in number
+
+create table studenttable(rno int, name string, age int)
+partitioned by (course string)
+row format delimited
+fields terminated by ','
+;
+
+https://bigdataprogrammers.com/partition-in-hive/
+
+
+Time taken: 0.073 seconds
+hive> show tables;
+OK
+employee
+product
+product_part
+product_partition
+productdb
+student
+studenttable
+Time taken: 0.089 seconds, Fetched: 7 row(s)
+hive> 
+
+hive> desc studenttable;
+OK
+rno                     int                                         
+name                    string                                      
+age                     int                                         
+course                  string                                      
+                 
+# Partition Information          
+# col_name              data_type               comment             
+                 
+course                  string                                      
+Time taken: 0.127 seconds, Fetched: 9 row(s)
+hive> 
+
+Load the data into the table and pass the values of partition columns with it by using the following command: -
+=====================================================================================
+
+hive> load data local inpath 'studenttable' overwrite into table studenttable partition(course="java");
+Loading data to table practice1.studenttable partition (course=java)
+OK
+Time taken: 0.469 seconds
+ 
+Load the data of another file into the same table and pass the values of partition columns with it by using the following command: -
+=============================================================================================================
+
+load data local inpath 'studenttable2' into table student partition(course= "haddop"); --File 2, two different files
+
+[jayeshrasikkumaranz@ip-10-0-41-79 ~]$ 
+[jayeshrasikkumaranz@ip-10-0-41-79 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/studenttable/
+Found 2 items
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 14:53 /user/hive/warehouse/practice1.db/studenttable/course=haddop
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 14:54 /user/hive/warehouse/practice1.db/studenttable/course=java	
+
+ 
+
+Time taken: 0.529 seconds
+hive> load data local inpath 'studenttable' into table student 
+    > partition(course= "haddop"); 
+Loading data to table test.student partition (course=haddop)
+OK
+Time taken: 0.475 seconds
+hive> show create table student;
+OK
+CREATE TABLE `student`(
+  `id` int, 
+  `name` string, 
+  `age` int, 
+  `institute` string)
+PARTITIONED BY ( 
+  `course` string)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+WITH SERDEPROPERTIES ( 
+  'field.delim'=',', 
+  'serialization.format'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://nameservice1/user/hive/warehouse/test.db/student'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1616598532')
+Time taken: 0.065 seconds, Fetched: 20 row(s)
+hive> select * from student where course="java"; 
+OK
+6       jayesh  25      java    java
+2       nish    26      java    java
+3       vikram  40      haddop  java
+4       pooja   50      sql     java
+5       sri     60      testing java
+6       ravi    25      haddop  java
+7       ravi    26      testing java
+8       pramod  40      java    java
+Time taken: 0.113 seconds, Fetched: 8 row(s)
+hive> 
+===============
+
+Bucketing
+
+The bucketing in Hive is a data organizing technique. It is similar to partitioning in Hive with an added functionality that it divides large datasets into more manageable parts known as buckets. So, we can use bucketing in Hive when the implementation of partitioning becomes difficult. 
+However, we can also divide partitions further in buckets.
+
+create table product(id int, userid string,prodname string,puryear int)
+row format delimited
+fields terminated by ','
+;
+
+hive> load data local inpath 'product' into table product; 
+Loading data to table test.product
+OK
+Time taken: 0.316 seconds
+hive> select * from product;
+OK
+1       A001    car     2011
+2       B002    mobile  2022
+3       C001    laptop  2010
+4       D001    ipad    2010
+5       e001    tc      2022
+Time taken: 0.065 seconds, Fetched: 5 row(s)
+hive>     
+
+-------In bucketing, the column we are bucketing must be present in the table whereas in partition, the column should not present in create statement4
+
+--- Bucket is physically a file
+-- We can explicity set the no of buckets during table creation
+
+create table product_bulk( id int,userid string,prodname string, pur_year int)
+ clustered by (pur_year) into 3 BUCKETS
+  row format delimited 
+fields terminated by ',' ;  
+
+Now, insert the data of dummy table into the bucketed table.
+
+hive> insert overwrite table product_bulk select * from product;  
+Query ID = jayeshrasikkumaranz_20210324153915_5e667468-25ab-4a47-a433-0829818a10a5
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1608530820093_22061, Tracking URL = http://ip-10-0-21-131.ec2.internal:8088/proxy/application_1608530820093_22061/
+Kill Command = /opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/hadoop/bin/hadoop job  -kill job_1608530820093_22061
+Hadoop job information for Stage-1: number of mappers: 0; number of reducers: 0
+2021-03-24 15:39:22,046 Stage-1 map = 0%,  reduce = 0%
+Ended Job = job_1608530820093_22061
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to directory hdfs://nameservice1/user/hive/warehouse/test.db/product/.hive-staging_hive_2021-03-24_15-39-15_325_4934246968352519220-1/-ext-10000
+Loading data to table test.product
+MapReduce Jobs Launched: 
+Stage-Stage-1:  HDFS Read: 0 HDFS Write: 0 HDFS EC Read: 0 SUCCESS
+Total MapReduce CPU Time Spent: 0 msec
+OK
+Time taken: 9.063 seconds
+hive>  
+
+[jayeshrasikkumaranz@ip-10-0-41-79 ~]$ hdfs dfs -ls /user/hive/warehouse/test.db/product_bulk
+Found 3 items
+-rwxrwxrwt   3 jayeshrasikkumaranz hive          0 2021-03-24 15:41 /user/hive/warehouse/test.db/product_bulk/000000_0
+-rwxrwxrwt   3 jayeshrasikkumaranz hive          0 2021-03-24 15:41 /user/hive/warehouse/test.db/product_bulk/000001_0
+-rwxrwxrwt   3 jayeshrasikkumaranz hive          0 2021-03-24 15:41 /user/hive/warehouse/test.db/product_bulk/000002_0
+[jayeshrasikkumaranz@ip-10-0-41-79 ~]$ 
+
+==========
+
+hive> create table emp_demo (Id int, Name string , Salary float)    
+    > row format delimited    
+    > fields terminated by ',' ;   
+OK
+Time taken: 0.193 seconds
+hive> load data local inpath 'emp_details' into table emp_demo;  
+Loading data to table test.emp_demo
+OK
+Time taken: 0.311 seconds
+hive> set hive.enforce.bucketing = true;  
+hive> create table emp_bucket(Id int, Name string , Salary float)    
+    > clustered by (Id) into 3 buckets  
+    > row format delimited    
+    > fields terminated by ',' ;    
+OK
+Time taken: 0.093 seconds
+hive>  insert overwrite table emp_bucket select * from emp_demo;   
+Query ID = jayeshrasikkumaranz_20210324154806_a9caf440-aeaf-4b76-98bb-7a6b0dd68382
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 3
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1608530820093_22070, Tracking URL = http://ip-10-0-21-131.ec2.internal:8088/proxy/application_1608530820093_22070/
+Kill Command = /opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/hadoop/bin/hadoop job  -kill job_1608530820093_22070
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 3
+2021-03-24 15:48:13,201 Stage-1 map = 0%,  reduce = 0%
+2021-03-24 15:48:18,292 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.18 sec
+2021-03-24 15:48:24,391 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 9.97 sec
+MapReduce Total cumulative CPU time: 9 seconds 970 msec
+Ended Job = job_1608530820093_22070
+Loading data to table test.emp_bucket
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 3   Cumulative CPU: 9.97 sec   HDFS Read: 16304 HDFS Write: 245 HDFS EC Read: 0 SUCCESS
+Total MapReduce CPU Time Spent: 9 seconds 970 msec
+OK
+Time taken: 19.637 seconds
+hive> select * from emp_bucket;
+OK
+123456  rajesh  3500.0
+756501  jayesh  2500.0
+89789   kiran   95000.0
+Time taken: 0.083 seconds, Fetched: 3 row(s)
+hive> show create table emp_bucket;
+OK
+CREATE TABLE `emp_bucket`(
+  `id` int, 
+  `name` string, 
+  `salary` float)
+CLUSTERED BY ( 
+  id) 
+INTO 3 BUCKETS
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+WITH SERDEPROPERTIES ( 
+  'field.delim'=',', 
+  'serialization.format'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://nameservice1/user/hive/warehouse/test.db/emp_bucket'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1616600905')
+Time taken: 0.077 seconds, Fetched: 20 row(s)
+
+=========
+CREATE TABLE products ( product_id string,
+                        brand string,
+                        size string,
+                        discount float,
+                        price float )
+PARTITIONED BY (gender string,
+                category string,
+                color string)
+CLUSTERED BY (price) INTO 50 BUCKETS;
+Partition bucketin
+
+create table prod_part_buk
+ (id int,userid string, name string,pur_mon string)
+PARTITIONED BY (pur_year int)
+CLUSTERED BY (pur_mon) INTO 3 BUCKETS
+row format delimited 
+fields terminated by '|'
+ stored as textfile; 
+
+set hive.enforce.bucketing=true;
+set hive.exec.dynamic.partition.mode=true;
+INSERT into table product_partition PARTITION (pur_year, pur_mon) select * from productdb;(https://www.youtube.com/watch?v=_Nk_pt5Izgg)
+
+ 
+
+====================
+Agreegate function in Hive
+=====================
+
+join
+
+CREATE TABLE employee ( emp_id int,
+                        emp_name string,
+                        sal bigint,
+                        dep string,
+                        deptid int )
+row format delimited
+fields terminated by ','
+;
+
+load data local inpath 'employee' into table employee;
+
+select * from employee order by sal;
+
+select dep, min(sal) from employee group by dep;
+
+Admin   176000
+Developer       76000
+HR      76000
+Manager 55000
+
+hive> select * from employee;
+OK
+NULL    nisha   145000  Trainer 10
+NULL    pooja   55000   Manager 10
+NULL    vikram  76000   TL      10
+NULL    pooja   160000  HR      30
+NULL    Prachi  76000   HR      30
+NULL    Gopal   176000  Admin   40
+NULL    manik   176000  Admin   40
+NULL    ronit   76000   Developer       10
+NULL    mayuri  76000   Developer       10
+NULL    vishal  80000   Trainer 10
+
+select dep,sum(sal) as totalsal from employee group by dep;
+
+Admin   352000
+Developer       152000
+HR      236000
+Manager 55000
+TL      76000
+Trainer 225000
+
+SELECT dep,avg(sal) as avgsal FROM employee GROUP BY dep HAVING avg(sal)>100000;
+
+dep     avgsal
+Admin   176000.0
+HR      118000.0
+Trainer 112500.0
+
+create table dept
+( deptid int, deptname string)
+row format delimited
+fields terminated by ','
+ 
+hive> load data local inpath 'dept' into table dept;
+Loading data to table test.dept
+OK
+Time taken: 0.285 seconds
+hive> select * from dept;
+OK
+dept.deptid     dept.deptname
+10      IT
+20      Accountant
+30      HR
+40      Admin
+Time taken: 0.065 seconds, Fetched: 4 row(s)
+
+inner join
+
+SELECT c.Id, c.Name, c.Age, o.Amount FROM sample_joins c JOIN sample_joins1 o ON(c.Id=o.Id);
+
+select employee.*, dept.* from employee join dept on employee.deptid = dept.deptid;
+
+select e1.emp_name, e1.age from employee e1 join dept d1 on e1.age=d1.deptid;
+
+left outer join
+
+right outer join
+
+pull outer join

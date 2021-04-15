@@ -1,0 +1,227 @@
+Apache Spark is one of the most popular framework for big data analysis. Spark is written in Scala as it can be quite fast because it's statically typed and it compiles in a known way to the JVM. Though Spark has API’s for Scala, Python, Java and R but 
+the popularly used languages are the former two
+
+1.spark-shell 2.pyspark - python
+
+scala> var a = Array(1,2,3)
+a: Array[Int] = Array(1, 2, 3)
+scala> a(0)
+res0: Int = 1
+
+scala> import Array._
+import Array._
+scala> var matrix = ofDim[Int](2,2)
+matrix: Array[Array[Int]] = Array(Array(0, 0), Array(0, 0))
+
+scala> val name:List[String] = List("a","b")
+name: List[String] = List(a, b)
+scala> val name:List[Int] = List(1,2)
+name: List[Int] = List(1, 2)
+scala> name(0)
+res1: Int = 1
+scala> name(0) = 5
+<console>:29: error: value update is not a member of List[Int]
+       name(0) = 5
+       ^
+scala> var num:List[Int] = List(1,2)
+num: List[Int] = List(1, 2)
+scala> num(0) = 3
+<console>:29: error: value update is not a member of List[Int] ------>unable to change value but its allowed in Array as List is immutuable
+       num(0) = 3
+       ^
+scala> val name:List[String] = List("a","b")
+name: List[String] = List(a, b)
+scala> println(name.head)
+a
+scala> println(name.tail)
+List(b)
+
+                           ^
+scala> println(name.isEmpty)
+false
+
+==
+
+Scala Set is a collection of pairwise different elements of the same type. In other words, a Set is a collection that contains no duplicate elements. 
+There are two kinds of Sets, the immutable and the mutable. ... By default, Scala uses the immutable Set.you'll have to import scala.collection.mutable.Set class explicitly. 
+
+--
+
+Map
+
+mapt: Map[Int,Char] = Map(1 -> A)
+
+Scala map is a collection of key/value pairs. Any value can be retrieved based on its key. Keys are unique in the Map, 
+but values need not be unique. Maps are also called Hash tables. There are two kinds of Maps, the immutable and the mutable. 
+The difference between mutable and immutable objects is that when an object is immutable, the object itself can't be changed.
+
+By default, Scala uses the immutable Map. If you want to use the mutable Map, you'll have to import scala.collection.mutable.Map class explicitly. 
+If you want to use both mutable and immutable Maps in the same, then you can continue to refer to the immutable Map as Map but you can refer to the mutable set as mutable.Map.
+
+The Following is the example statements to de
+
+scala> var set:Set[Int] = Set(1,2)
+set: Set[Int] = Set(1, 2)
+scala> set(0) = 9
+<console>:30: error: value update is not a member of Set[Int]
+       set(0) = 9
+       ^
+
+scala> var set = Set(1, 2, 3)
+set: scala.collection.immutable.Set[Int] = Set(1, 2, 3)
+scala> set += 4
+scala> println(set)
+Set(1, 2, 3, 4)
+scala> set += 4
+scala> println(set)
+Set(1, 2, 3, 4)
+scala> set(1)
+res25: Boolean = true
+scala> var s : Set[Int] = Set(1,3,5,7)
+s: Set[Int] = Set(1, 3, 5, 7)
+scala> s(0)
+res26: Boolean = false
+scala> s(1)
+res27: Boolean = true
+scala> set +=4
+scala> println(set)
+Set(1, 2, 3, 4)
+
+import scala.collection.immutable._  
+object MainObject{  
+        def main(args:Array[String]){  
+            var games = Set("Cricket","Football","Hocky","Golf")  
+            println(games)  
+            games += "Racing"               // Adding new element  
+            println(games)  
+            games += "Cricket"              // Adding new element, it does not allow duplicacy.  
+            println(games)  
+            games -= "Golf"             // Removing element  
+            println(games)  
+        }  
+    }  
+
+scala.collection.immutuable
+
+
+scala> val mapMut = scala.collection.mutable.Map("Ajay" -> 30)
+mapMut: scala.collection.mutable.Map[String,Int] = Map(Ajay -> 30)
+scala> mapMut += ("Ajay" -> 10)
+res32: mapMut.type = Map(Ajay -> 10)
+scala> println(mapMut)
+Map(Ajay -> 10)
+scala> val mapMut = scala.collection.immutable.Map("Ajay" -> 30)
+mapMut: scala.collection.immutable.Map[String,Int] = Map(Ajay -> 30)
+scala> mapMut += ("Ajay" -> 10)
+<console>:30: error: value += is not a member of scala.collection.immutable.Map[String,Int]
+  Expression does not convert to assignment because receiver is not assignable.
+       mapMut += ("Ajay" -> 10)
+
+Tuple
+====
+
+n Scala, a tuple is a value that contains a fixed number of elements, each with its own type. Tuples are immutable. ... 
+The inferred type of ingredient is (String, Int) , which is shorthand for Tuple2[String, Int] . 
+
+   val t = (4,3,2,1)
+      val sum = t._1 + t._2 + t._3 + t._4
+
+scala> t._1=4
+<console>:29: error: reassignment to val
+       t._1=4
+
+scala> val t = (4,3,2,1)
+t: (Int, Int, Int, Int) = (4,3,2,1)
+scala> t.productIterator.foreach{ i =>println("Value = " + i )}
+Value = 4
+Value = 3
+Value = 2
+Value = 1
+
+
+To represent tuples, Scala uses a series of classes: Tuple2 , Tuple3 , etc., through Tuple22 .
+
+Pattern
+===========
+
+Pattern matching is a way of checking the given sequence of tokens for the presence of the specific pattern. 
+It is the most widely used feature in Scala. It is a technique for checking a value against a pattern. 
+It is similar to the switch statement of Java and C.
+
+object GeeksforGeeks {
+      
+      // main method
+      def main(args: Array[String]) {
+        
+      // calling test method
+      println(test(1));
+      }
+  
+  
+   // method containing match keyword
+   def test(x:Int): String = x match {
+         
+       // if value of x is 0,
+       // this case will be executed
+       case 0 => "Hello, Geeks!!"
+         
+       // if value of x is 1, 
+       // this case will be executed
+
+
+case 1 => "Are you learning Scala?"
+         
+       // if x doesnt match any sequence,
+       // then this case will be executed
+       case _ => "Good Luck!!"
+   }
+}
+
+class test{
+	var total:Int = 0
+	def calTotal(mar1:Int,mar2:Int){
+		total = mar1 + mar2
+		println(total)
+	}
+}
+
+object callstud{
+	def main(args:Array[String]){
+	val obj = new test()
+	obj.calTotal(1,1)
+	
+	}
+}
+
+callstud.main(null)
+
+===
+
+class Student(val m1:Int,val m2:Int) {
+      var total:Int = m1 + m2
+      var ma1:Int = m1
+      var ma2:Int = m2
+      def calTotal(ma1:Int,ma2:Int){
+         total = ma1 + ma2
+       println("total Marks ="+total)
+     }
+     override def toString():String = "(" + total + ")";
+  }
+class HigherStudent(override val m1:Int,override val m2:Int,val m3:Int,val m4:Int) extends Student(m1,m2){
+              var ma3:Int=m3
+              var ma4:Int=m4
+              var tot:Int=0
+     def calTotal(ma1:Int,ma2:Int,m3:Int,m4:Int)
+    {
+      tot = ma1 + ma2 + ma3 + ma4
+     println("total is ="+tot)
+    }
+   override def toString():String = "(" + total + ")";
+ }
+object callStud{
+      def main(args:Array[String]){
+        val totmarks = new HigherStudent(72,65,80,90)
+         totmarks.calTotal(72,65,80,90)
+      println("Grand total marks "+totmarks)
+   }
+}

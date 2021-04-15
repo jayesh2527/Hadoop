@@ -1,0 +1,395 @@
+This is Hadoop post
+and Hadoop is a big technology
+Hadoop is a big data framwork
+
+create table word
+( text string );
+
+select key, split(items, ',') as valArray
+	from test
+
+load data local inpath 'wordtxt' into table word; 
+
+You can split a row in Hive table into multiple rows using lateral view explode function. The one thing that needs to be present is a delimiter using 
+
+which we can split the values.
+
+select explode(split(text,' ')) as newWord from word;
+
+This
+is
+Hadoop
+post
+and
+Hadoop
+is
+a
+big
+technology
+Hadoop
+is
+a
+big
+data
+framwork
+
+SELECT newWord, count(1) as count FROM
+(SELECT explode(split(text, ' ')) AS newWord FROM word) temp1
+GROUP BY newWord;
+
+newword count
+Hadoop  3
+This    1
+a       2
+and     1
+big     2
+data    1
+framwork        1
+is      3
+post    1
+technology      1
+Time taken: 20.533 seconds, Fetched: 10 row(s)
+hive> 
+
+userid
+track_id
+shared
+radio
+skip
+
+create table musiconline(user_id int, track_id int, shared int, radio int, skip int)
+row format delimited
+fields terminated by '|'
+;
+
+
+load data local inpath 'musiconline' into table musiconline; 
+
+select count(track_id) as Numberoftimes from musiconline where shared=1;
+
+select track_id, count(user_id) as Numberoftimes from musiconline where shared=1 GROUP BY track_id;
+
+SELECT COUNT(userid) as NoofUsers FROM musiconline; --NoofUsers
+SELECT TrackId,COUNT(userid) as NoofTimeShared FROM musiconline WHERE Shared=1 GROUP BY TrackId; --NoofTimeTrackhasBeenShared
+SELECT TrackId,COUNT(userid) as NoofTimeShared FROM musiconline WHERE Radio=1 GROUP BY TrackId; --NoofTimeTrackListenedonRadion
+SELECT TrackId,COUNT(userid) as NoofTimeShared FROM musiconline WHERE Skip=0 GROUP BY TrackId; --Nooftimetacklistenedin total
+SELECT TrackId,COUNT(userid) as NoofTimeShared FROM musiconline WHERE Radio=1 AND Skip=0 GROUP BY TrackId; --Nooftimetacklistenedin tota
+
+
+hive> select track_id, count(track_id) as Numberoftimes from musiconline where shared=1 group by track_id;
+Query ID = jayeshrasikkumaranz_20210325161707_5b434bb6-7df0-4126-a81e-261b9f881b44
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1608530820093_22468, Tracking URL = http://ip-10-0-21-131.ec2.internal:8088/proxy/application_1608530820093_22468/
+Kill Command = /opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/hadoop/bin/hadoop job  -kill job_1608530820093_22468
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2021-03-25 16:17:22,788 Stage-1 map = 0%,  reduce = 0%
+2021-03-25 16:17:28,938 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 4.14 sec
+2021-03-25 16:17:36,080 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 6.64 sec
+MapReduce Total cumulative CPU time: 6 seconds 640 msec
+Ended Job = job_1608530820093_22468
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 6.64 sec   HDFS Read: 9922 HDFS Write: 159 HDFS EC Read: 0 SUCCESS
+Total MapReduce CPU Time Spent: 6 seconds 640 msec
+OK
+205     3
+223     2
+225     4
+245     3
+Time taken: 29.261 seconds, Fetched: 4 row(s)
+hive> 
+
+hdfs dfs -copyFromLocal 'wordtext' /user/jayeshrasikkumaranz/pigdata
+
+
+
+hadoop fs -copyFromLocal 'product' /user/jayeshrasikkumaranz/practice3
+
+product = LOAD 'product' 
+USING PigStorage(',')
+as (userid,productid,product,puryear)
+
+student = LOAD 'student' USING
+ PigStorage(',') as (id:int
+
+
+tudent = LOAD 'hdfs://localhost:9000/pig_data/student_data.txt' 
+   USING PigStorage(',')
+   as ( id:int, firstname:chararray, lastname:chararray, phone:chararray, 
+drop product
+
+firstscript.pg
+student = LOAD 'student' USING PigStorage(',') as (id:int,name:chararray,city:chararray);
+Dump student;
+
+Input(s):
+Successfully read 5 records (465 bytes) from: "hdfs://nameservice1/user/jayeshrasikkumaranz/product"
+Output(s):
+Successfully stored 5 records (121 bytes) in: "hdfs://nameservice1/tmp/temp-246846510/tmp-944363244"
+Counters:
+Total records written : 5
+Total bytes written : 121
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /tmp/temp-246846510/tmp-944363244/
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz supergroup          0 2021-03-25 17:18 /tmp/temp-246846510/tmp-944363244/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz supergroup        121 2021-03-25 17:18 /tmp/temp-246846510/tmp-944363244/part-m-00000
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+
+
+pig -x local firstscript.pg
+pig -x mapreduce script.pig------------Two ways to load the data in pig mapreduce or use local
+
+Input(s):
+Successfully read 10 records (661 bytes) from: "/user/jayeshrasikkumaranz/pigdata/employee"
+Output(s):
+Successfully stored 10 records (343 bytes) in: "hdfs://nameservice1/tmp/temp-1975663722/tmp882545123"
+
+
+
+
+chmod u+x 
+   city:chararray );
+
+
+sh ls - display all the files in local system
+fs -ls - display all the files in hadoop
+
+employee = LOAD '/user/jayeshrasikkumaranz/pigdata/employee' using PigStorage(',')
+as (id,name,salary,dept,age)
+dump employee(After dump only we would be able to find whether its working)
+
+chmod u+x secon_file.pg 
+
+pig -x local secon_file.pg (There are two ways to load data into pig 1. using script and another using command)
+
+--
+
+movie = LOAD '/user/jayeshrasikkumaranz/pigdata/movies_data.csv' using PigStorage(',')
+as (id,name,year,rating,duration);
+dump movie;
+
+store movie into '/user/jayeshrasikkumaranz/pigdata/moviedump' using PigStorage(',');
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/pigdata/moviedump
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz hadoop          0 2021-03-26 15:43 /user/jayeshrasikkumaranz/pigdata/moviedump/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz hadoop       1392 2021-03-26 15:43 /user/jayeshrasikkumaranz/pigdata/moviedump/part-m-00000
+
+customer = LOAD '/user/jayeshrasikkumaranz/pigdata/customerdb'' using PigStorage(',');
+
+grunt> describe movie;
+2021-03-26 15:59:48,387 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-me
+trics-publisher.enabled
+2021-03-26 15:59:48,387 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.zk-address is deprecated. Instead, use hadoop.zk.address
+movie: {id: bytearray,name: bytearray,year: bytearray,rating: bytearray,money: bytearray}
+grunt> 
+
+by default data type is byte array when we dont define schema
+
+A Pig relation is similar to a table in a relational database, where the tuples in the bag correspond to the rows in a table. Unlike a relational table, however, Pig relations don't require that every tuple contain the same number of 
+fields or that the fields in the same position (column) have the same type.
+
+movies = filter movie by year>1950;
+
+filter_data = FILTER movie BY name == 'The Best of Times';
+dump filter_data;
+
+filter_data = FILTER movie BY year>1930 and year<1990;
+dump filter_data;
+
+filter_data = FILTER movie by name matches 'b.*';---after b any character and multiple occurance
+
+filter_data = FILTER movie by rating>=3.0 and rating<=4;
+
+productdb = LOAD '/user/jayeshrasikkumaranz/pigdata/productdb' 
+USING PigStorage(',')
+as (userid,productid,product,puryear,purmonth);
+
+find ./ -type f -name "*.txt"
+
+
+for each command
+=================
+
+The FOREACH operator is used to generate specified data transformations based on the column data.
+
+Let us now get the id, age, and city values of each student from the relation student_details and store it into another relation named foreach_data using the 
+foreach operator as shown below.
+
+grunt> foreach_data = FOREACH student_details GENERATE id,age,city;
+
+grunt> describe movie;
+movie: {id: bytearray,name: bytearray,year: bytearray,rating: bytearray,money: bytearray}
+movie_duration = FOREACH movies GENERATE name, (double)(money/60);
+
+====
+
+Group by
+
+grunt> grouped_by_year = group movie by year;
+grunt>count_by_year = FOREACH grouped_by_year GENERATE group, COUNT(movie);
+dump count_by_year;
+
+Grouping by Multiple Columns
+Let us group the relation by age and city as shown below.
+
+grunt> group_multiple = GROUP student_details by (age, city);Grouping by Multiple Columns
+Let us group the relation by age and city as shown below.
+
+grunt> group_multiple = GROUP student_details by (age, city);
+
+des_movie = ORDER movie by year DESC;
+asc_movie = ORDER movie by year ASC;
+
+dis_rec = DISTINCT movie;
+dump dis_rec;
+
+Copy and paste in vi editor
+============================
+
+Press y to copy, or d to cut the selection.
+
+Move the cursor to the location where you want to paste the contents.
+
+Press P to paste the contents before the cursor, or p to paste it after the cursor.
+
+Limit
+
+limit_top = LIMIT movie 5;
+dump limit_top;
+
+join
+======
+
+customer1 = LOAD '/user/jayeshrasikkumaranz/pigdata/customers.txt' 
+USING PigStorage(',')
+as (id:int, name:chararray, age:int, address:chararray, salary:int);
+dump customers;
+
+grunt> describe customers;
+customers: {id: bytearray,name: bytearray,age: bytearray,location: bytearray,amount: bytearray}
+grunt> 
+grunt> 
+
+orders = LOAD '/user/jayeshrasikkumaranz/pigdata/orders.txt' 
+USING PigStorage(',')
+as (oid:int, date:chararray, customer_id:int, amount:int);
+
+grunt> describe orders;
+orders: {orderid: bytearray,
+date: bytearray,
+time: bytearray
+,id: bytearray,
+amnt: bytearray}
+grunt> 
+grunt> 
+
+grunt>coustomer_orders = JOIN customers BY id,orders BY id;
+grunt>Dump coustomer_orders;
+
+dump orders;
+
+Inner join
+================
+customers3 = JOIN customers BY id, orders BY id;
+
+Left Outer Join
+The left outer Join operation returns all rows from the left table, even if there are no matches in the right relation.
+
+Right Outer Join
+The right outer join operation returns all rows from the right table, even if there are no matches in the left table.
+
+grunt> outer_right = JOIN customers BY id RIGHT, orders BY customer_id;
+
+
+runt> customers1 = LOAD '/user/jayeshrasikkumaranz/pigdata/customers.txt' USING PigStorage(',')
+   as (id:int, name:chararray, age:int, address:chararray, salary:int);
+  
+grunt> customers2 = LOAD '/user/jayeshrasikkumaranz/pigdata/customers.txt' USING PigStorage(',')
+   as (id:int, name:chararray, age:int, address:chararray, salary:int); 
+
+
+FromPhoneNumber|ToPhoneNumber|CallStartTime|CallEndTime|STDFlag
+9665128505|8983006310|2015-03-01 09:08:10|2015-03-01 10:12:15|1
+9665128505|8983006310|2015-03-01 07:08:10|2015-03-01 08:12:15|0
+9665128505|8983006310|2015-03-01 09:08:10|2015-03-01 09:12:15|1
+9665128505|8983006310|2015-03-01 09:08:10|2015-03-01 10:12:15|0
+9665128506|8983006310|2015-03-01 09:08:10|2015-03-01 10:12:15|1
+9665128507|8983006310|2015-03-01 09:08:10|2015-03-01 10:12:15|1
+
+
+---
+
+
+word= LOAD '/user/jayeshrasikkumaranz/pigdata/wordtxt' 
+as (line:chararray);
+
+words = foreach word  Generate FLATTEN(TOKENIZE(line)) as alias
+grouped = GROUP words by alias;
+wordcount = FOREACH grouped GENERATE group,count(words);
+
+===
+telephone= LOAD '/user/jayeshrasikkumaranz/pigdata/telephone.txt' USING PigStorage('|') 
+as (FromPhoneNumber:long, ToPhoneNumber:long, callStartTime:chararray, CallEndTime:chararray, STDFlag:int);
+
+grunt> describe telephone;
+telephone: {FromPhoneNumber: long,ToPhoneNumber: long,callStartTime: chararray,CallEndTime: chararray,STDFlag: int}
+grunt> 
+
+minutesbetween_data = foreach telephone generate
+   MinutesBetween(ToDate(CallEndTime,'yyyy-MM-dd HH:mm:ss'),ToDate(callStartTime,'yyyy-MM-dd HH:mm:ss'));
+
+std_flag = filter telephone by minutesbetween_data>60
+
+call_morethan_60 = foreach minutesbetween_data generate MinutesBetween(CallEndTime,callStartTime);
+
+
+===
+
+
+airlines= LOAD '/user/jayeshrasikkumaranz/pigdata/4_airlines.csv' USING PigStorage(',') 
+as (IATA_CODE:chararray, AIRLINE:chararray);
+
+airport= LOAD '/user/jayeshrasikkumaranz/pigdata/4_airports.csv' USING PigStorage(',') 
+as (IATA_CODE:chararray, AIRPORT:chararray,CITY:chararray,STATE:chararray,COUNTRY:chararray,LATITUDE:double,LONGITUDE:double);
+
+flights= LOAD '/user/jayeshrasikkumaranz/pigdata/4_flights_Case_study.csv' USING PigStorage(',') 
+as (year:int,month:int,AIRLINE:chararray,FLIGHT_NUMBER:int,ORIGIN_AIRPORT:chararray,DESTINATION_AIRPORT:chararray,DISTANCE:long,ARRIVAL_TIME:long,ARRIVAL_DELAY:long,DIVERTED:int,CANCELLED:int);
+
+filterColumn = FILTER flights BY ARRIVAL_DELAY == 1;
+group_multiple = GROUP filterColumn by (AIRLINE);
+
+result = FOREACH group_multiple GENERATE COUNT(flights);
+dump count_by_year;
+
+4.1 Total Number of Flights Cancelled Each Month for 2012-2014
+The Hive QL for querying the total number of flights that were cancelled every month from
+2012 to 2014 is:
+SELECT YEAR, MONTH, COUNT (CANCELLED) AS TOTAL_CANCELLED
+FROM Airline
+WHERE CANCELLED = 1
+GROUP BY YEAR, MONTH
+ORDER BY YEAR, MONTH
+LIMIT 50;
+4.2 Total Number of Flights Diverted Each Month for 2012-2014
+The Hive QL for querying the total number of flights that were diverted every month from
+2012 to 2014 is:
+SELECT YEAR, MONTH, COUNT (DIVERTED) AS TOTAL_DIVERTED
+FROM Airline
+WHERE DIVERTED = 1
+GROUP BY YEAR, MONTH
+ORDER BY YEAR,
+
+
+

@@ -1,0 +1,298 @@
+
+https://www.youtube.com/watch?v=CKTYPAjWIII&list=PLf0swTFhTI8qaFYQyR99wchg1Kx_BFXSg&index=7
+sqoopdb.slbdh.cloudlabs.com
+
+mysql -h sqoopdb.slbdh.cloudlabs.com -u jayeshrasikkumaranz -p
+
+MySQL [(none)]> show databases;
++---------------------+
+| Database            |
++---------------------+
+| information_schema  |
+| jayeshrasikkumaranz |
++---------------------+
+2 rows in set (0.21 sec)
+MySQL [(none)]> use jayeshrasikkumaranz;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+create table student
+(
+	rno int primary key,
+ 	name varchar(10),
+	mks int,
+	grade char(2)
+);
+
+create databse databasename;
+use databasename;
+drop database1
+
+insert into student values(5, 'Ram', 100, 'A');
+
+import --
+
+jayeshrasikkumaranz
+jayeshrasikkumaranzysxbp
+
+jayeshrasikkumaranz
+
+from sQL to Hadoop database file
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+ --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee --m 1 --target-dir /user/jayeshrasikkumaranz/practice1/
+
+
+====================Overrite command
+sqoop import --connect jdbc:mysql://localhost/dbname --username username -P --table tablename --hive-overwrite --target-dir '/path/to/dir/' -m 1
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee --hive-overwrite --target-dir /user/jayeshrasikkumaranz/employee/ --m 1
+
+load data local inpath 'customerdb' overwrite into table customerdb;
+====================================
+
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice/student
+ls: `/user/jayeshrasikkumaranz/practice/student': No such file or directory
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice/
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz hadoop          0 2021-03-18 17:17 /user/jayeshrasikkumaranz/practice/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz hadoop         36 2021-03-18 17:17 /user/jayeshrasikkumaranz/practice/part-m-00000
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -cat /user/jayeshrasikkumaranz/practice/part-m-00000
+1,Jai,100,A
+3,raj,100,A
+5,Ram,100,A
+
+--------------
+
+DESCRIPTION
+
+Problem Statement: Using SQL and Sqoop commands, perform the below tasks:
+
+Create a database
+Create a table “employee” with the following fields: Id, Name, Salary,
+Department, and Designation
+Id is the primary key for the table
+Insert at least 5 records into the table
+Import the database and table into Sqoop
+Import only the records for which Salary is greater than 50000
+Steps to Perform:
+
+MySQL
+mysql -u labuser -p
+
+Password : simplilearn
+CREATE DATABASE userdb;
+use userdb;
+create table employee(Id INT NOT NULL, Name VARCHAR(100) NOT
+NULL, Salary INT NOT NULL,Department VARCHAR(100) NOT NULL, Designation VARCHAR(100) NOT NULL, PRIMARY KEY(Id));
+insert into employee values(201,'Peter',50000,'it','Developer');
+insert into employee values(202,'Alice',60000,'Sales','Manager');
+insert into employee values(203,'Jack',70000,'Operations','Director');
+insert into employee values(986,'RAM',70000,'Support','Director');
+
+Sqoop
+ 
+sqoop list-databases --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp
+sqoop list-tables --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp
+---Note directory shouldnt be exists
+IF you tried to import and directory exists then error would be logged
+21/03/20 16:48:06 ERROR tool.ImportTool: Import failed: org.apache.hadoop.mapred.FileAlreadyExistsException: Output directory hdfs://nameservice1/user/jayeshrasikkumaranz/practice3 alr
+eady exists
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee1 -m 1 --target-dir '/user/jayeshrasikkumaranz/practice3/' -m 1
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice3/
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz hadoop          0 2021-03-20 16:34 /user/jayeshrasikkumaranz/practice3/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz hadoop         94 2021-03-20 16:34 /user/jayeshrasikkumaranz/practice3/part-m-00000
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee1 -m 1 --warehouse-dir '/user/jayeshrasikkumaranz/practice4' -m 1
+
+-m 1 - map reduce, default value 4(dataa is divided mutually exclusive 4)
+
+----
+
+--delete -target -dir(Delete the import target directory if already exists)
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table employee1 -m 1 --warehouse-dir '/user/jayeshrasikkumaranz/practice4' -m 1 \
+--delete-target-dir 
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice4/
+Found 1 items
+drwxr-xr-x   - jayeshrasikkumaranz hadoop          0 2021-03-20 16:59 /user/jayeshrasikkumaranz/practice4/employee1
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -ls /user/jayeshrasikkumaranz/practice4/employee1/
+Found 2 items
+-rw-r--r--   3 jayeshrasikkumaranz hadoop          0 2021-03-20 16:59 /user/jayeshrasikkumaranz/practice4/employee1/_SUCCESS
+-rw-r--r--   3 jayeshrasikkumaranz hadoop         94 2021-03-20 16:59 /user/jayeshrasikkumaranz/practice4/employee1/part-m-00000
+
+Basically, to quickly run simple SQL queries against a database, we use Sqoop Eval tool in Sqoop.
+==========================================================================================================
+
+sqoop eval --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+  --query "select * from employee"
+
+sqoop eval --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+  --query "insert into employee VALUES(999, 'Flori', 9999,'Fashion', 'manager')"
+
+rm -i will ask before deleting each file. Some people will have rm aliased to do this automatically (type "alias" to check). Consider using rm -I instead, which will only ask once and only if you are trying to delete three or more files.
+rm -r will recursively delete a directory and all its contents (normally rm will not delete directories, while rmdir will only delete empty directories).
+rm -f will forcibly delete files without asking; this is mostly useful if you have rm aliased to ``rm -i'' but want to delete lots of files without confirming each one.
+
+To delete and its content
+=====================
+
+[jayeshrasikkumaranz@ip-10-0-31-194 ~]$ hdfs dfs -rm -R /user/jayeshrasikkumaranz/practice3/
+
+Import control arguments
+============================
+--as-avrodatafile	Imports data to Avro Data Files(binary json format)
+--as-sequencefile	Imports data to SequenceFiles
+--as-textfile	Imports data as plain text (default)
+--as-parquetfile	Imports data to Parquet Files(Columnar fomrat)
+
+--boundary query and column while import to use retrieve data
+
+sqoop import \
+...
+--boundary-query "SELECT min(id), max(id) from some_table"
+--split-by id
+
+Sqoop run it mapper task by execute the SQL like SELECT * FROM table WHERE id >= low AND id < high. Sqoop uses query select minimum value for splitting, maximum value for splitting to find out boundaries for creating splits.
+ This Sqoop operation is known as Boundary Value Query.
+
+Sqoop import command
+------------------------------
+Table is created in SQL(RDBMS) and then import in HIVE
+
+MySQL [jayeshrasikkumaranz]> create table user
+    -> (
+    -> 
+    -> id int, name varchar(10)
+    -> 
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+MySQL [jayeshrasikkumaranz]> insert into user values(10,'jayesh');
+Query OK, 1 row affected (0.01 sec)
+MySQL [jayeshrasikkumaranz]> insert into user values(210,'raj');
+Query OK, 1 row affected (0.00 sec)
+MySQL [jayeshrasikkumaranz]> 
+MySQL [jayeshrasikkumaranz]> select * from user;
++------+--------+
+| id   | name   |
++------+--------+
+|   10 | jayesh |
+|  210 | raj    |
++------+--------+
+2 rows in set (0.00 sec)
+
+hive> create table user_data
+    > (
+    > id int, name string);
+OK
+Time taken: 0.682 seconds
+hive> desc user_data;
+OK
+id                      int                                         
+name                    string                                      
+Time taken: 0.14 seconds, Fetched: 2 row(s)
+hive> 
+
+import from sqoop to hive database
+==============================
+
+sqoop import --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp --table user \
+--hive-import \
+--hive-database practice1 --hive-table user_data1 -m 1 
+
+export command - export from Hive to mysql(transfer data from HDFS to relational databases, we say we are exporting data.)
+-------------------------------------------------
+Create databse in SQL
+
+create table product1
+(id int,userid string, productname string,put_year int, put_mon int)
+row format delimited
+fields terminated by '|'
+stored as textfile;
+
+load data local inpath 'product' into table product1;
+
+
+
+[jayeshrasikkumaranz@ip-10-0-31-213 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/
+Found 7 items
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 14:42 /user/hive/warehouse/practice1.db/bank
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 14:46 /user/hive/warehouse/practice1.db/icicibank
+drwxrwxrwt   - pradnyapatrikeyahoo hive          0 2021-03-22 17:00 /user/hive/warehouse/practice1.db/product
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 17:03 /user/hive/warehouse/practice1.db/product1
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 15:56 /user/hive/warehouse/practice1.db/student
+drwxrwxrwt   - pradnyapatrikeyahoo hive          0 2021-03-22 16:42 /user/hive/warehouse/practice1.db/user_data
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-22 16:54 /user/hive/warehouse/practice1.db/user_data1
+[jayeshrasikkumaranz@ip-10-0-31-213 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/product1
+Found 1 items
+-rwxrwxrwt   3 jayeshrasikkumaranz hive         67 2021-03-22 17:03 /user/hive/warehouse/practice1.db/product1/product
+[jayeshrasikkumaranz@ip-10-0-31-213 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/product
+Found 1 items
+-rwxrwxrwt   3 pradnyapatrikeyahoo hive        249 2021-03-22 17:00 /user/hive/warehouse/practice1.db/product/product
+
+sqoop export --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/pradnyapatrikeyahoo --username \
+pradnyapatrikeyahoo --password pradnyapatrikeyahoozprr3 \
+--export-dir '/user/hive/warehouse/practice1.db/product/product' \
+--table product -m 1 --lines-terminated-by '\n' --input-fields-terminated-by \
+'|' --driver com.mysql.jdbc.Driver;
+
+sqoop export --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \[Note jayeshrasikkumaranz is databased name where our table exists)
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+--export-dir '/user/hive/warehouse/practice1.db/product/product' \
+--table product -m 1 --lines-terminated-by '\n' --input-fields-terminated-by \
+'|' --driver com.mysql.jdbc.Driver;
+
+
+MySQL [jayeshrasikkumaranz]> create table product
+    ->     (id bigint,userid varchar(20), prodname varchar(20),pur_year bigint,pur_mon varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+MySQL [jayeshrasikkumaranz]> 
+MySQL [jayeshrasikkumaranz]> desc product;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| id       | bigint      | YES  |     | NULL    |       |
+| userid   | varchar(20) | YES  |     | NULL    |       |
+| prodname | varchar(20) | YES  |     | NULL    |       |
+| pur_year | bigint      | YES  |     | NULL    |       |
+| pur_mon  | varchar(20) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+MySQL [jayeshrasikkumaranz]> select * from product;
++------+--------+-------------------+----------+---------+
+| id   | userid | prodname          | pur_year | pur_mon |
++------+--------+-------------------+----------+---------+
+|    1 | A001   | car               |     2011 | jan     |
+|    2 | B002   | mobile            |     2011 | mar     |
+|    3 | C001   | laptop            |     2010 | jan     |
+|    4 | A002   | furniture         |     2011 | mar     |
+|    5 | A003   | computer hardware |     2010 | mar     |
+|    6 | A004   | router            |     2012 | feb     |
+|    7 | A005   | headphones        |     2012 | feb     |
+|    8 | B003   | harddisk          |     2011 | mar     |
+|    9 | B004   | pendrive          |     2010 | jan     |
+|   10 | B005   | mouse             |     2011 | jan     |
++------+--------+-------------------+----------+---------+
+
+
+ead the code snippet given below: val a = sc.parallelize(List("dog", "tiger", "lion", "cat", "spider", "eagle"), 2) val b = a.keyBy(_.length) val c = sc.parallelize(List("ant", "falcon", "squid"), 2) val d = c.keyBy(.length) Select the correct code snippet for which will produce the desired output shown below: Array[(lnt, String)] = Array((4,lion))
+SELECT THE CORRECT ANSWER
+
+
+c.subtractByKey(c).collect subtractByKey [Pair]
+
+b.subtractByKey(c).collect subtractByKey [Pair]
+
+c.subtractByKey(b).collect subtractByKey [Pair]
+
+b.subtractByKey(d).collect subtractByKey [Pair]

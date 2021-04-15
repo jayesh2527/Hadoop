@@ -1,0 +1,45 @@
+1.Use the following command to load the data:
+
+grunt> movies = LOAD '/home/hduser/pig/myscripts/movies_data.csv' USING PigStorage(',') as (id,name,year,rating,duration);
+
+let’s test to see if the alias has the data we loaded.
+
+grunt> DUMP movies;
+
+
+
+2.List the movies that having a rating greater than 4 ?
+grunt> movies_greater_than_four = FILTER movies BY rating>3.2;
+grunt> DUMP movies_greater_than_four;
+
+3.If you need to store the data to a file you can use the following command:
+grunt> store movies into '/user/output';
+
+go to location n check file for above command
+
+hadoop fs -ls /user/filename
+hadoop fs -cat /user/filename
+
+
+4.if you want to assign types:
+
+grunt> Movies = LOAD '/user/hadoop/movies.txt' USING  PigStorage(',')
+  as (id:int,name:chararray,year:int,rating:float, duration:int);
+
+DUMP Movies;
+
+Describe Movies;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,235 @@
+External and internal table
+===============================
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/
+Found 11 items
+drwxrwxrwt   - jayeshrasikkumaranz     hive          0 2021-03-24 07:22 /user/hive/warehouse/practice1.db/bank
+drwxrwxrwt   - ravishankartnaagargmail hive          0 2021-03-23 15:00 /user/hive/warehouse/practice1.db/consumer
+drwxrwxrwt   - jayeshrasikkumaranz     hive          0 2021-03-23 14:33 /user/hive/warehouse/practice1.db/customer1
+drwxrwxrwt   - jayeshrasikkumaranz     hive          0 2021-03-23 14:38 /user/hive/warehouse/practice1.db/customer2
+drwxrwxrwt   - siddiquimohdarifin      hive          0 2021-03-23 14:50 /user/hive/warehouse/practice1.db/customer4
+drwxrwxrwt   - jayeshrasikkumaranz     hive          0 2021-03-23 12:53 /user/hive/warehouse/practice1.db/customers
+drwxrwxrwt   - pradnyapatrikeyahoo     hive          0 2021-03-24 09:08 /user/hive/warehouse/practice1.db/dept
+drwxrwxrwt   - pradnyapatrikeyahoo     hive          0 2021-03-24 09:11 /user/hive/warehouse/practice1.db/employee
+drwxrwxrwt   - jayeshrasikkumaranz     hive          0 2021-03-22 17:03 /user/hive/warehouse/practice1.db/product1
+drwxrwxrwt   - jayeshrasikkumaranz     hive          0 2021-03-24 07:22 /user/hive/warehouse/practice1.db/student
+drwxrwxrwt   - jayeshrasikkumaranz     hive          0 2021-03-22 16:54 /user/hive/warehouse/practice1.db/user_data1
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+
+Time taken: 0.374 seconds, Fetched: 4 row(s)
+hive> show create table dept;
+OK
+CREATE TABLE `dept`(
+  `deptid` int, 
+  `deptname` string)
+ROW FORMAT SERDE 
+  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
+WITH SERDEPROPERTIES ( 
+  'field.delim'=',', 
+  'serialization.format'=',') 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  'hdfs://nameservice1/user/hive/warehouse/practice1.db/dept'
+TBLPROPERTIES (
+  'transient_lastDdlTime'='1616576925')
+Time taken: 0.198 seconds, Fetched: 16 row(s)
+hive> 
+
+Drop the table from Hive, although we dropped the table but still would be exist in hadoop
+
+hive> drop table dept;
+OK
+Time taken: 0.144 seconds
+hive> select * from dept;
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'dept'
+hive> 
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -cat /user/hive/warehouse/practice1.db/dept/dept
+10,IT
+20,Accountant
+30,HR
+40,Admin
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+
+External table
+-----------
+
+create external table customer_data(id int, name string,age int,city string)
+row format delimited
+fields terminated by ','
+;
+
+create a file in HDFS and load data in Hive
+
+hive> load data local inpath 'customer_db' into table customer_data;
+Loading data to table practice1.customer_data
+OK
+Time taken: 0.451 seconds
+hive> 
+hive> select * from customer_data;
+OK
+756501  Jayesh  3       Bangalore
+Time taken: 0.093 seconds, Fetched: 1 row(s)
+hive> 
+
+An external table is a table for which Hive does not manage storage. 
+If you delete an external table, only the definition in Hive is deleted. The data remains. An internal table is a table that Hive manages. If you delete an internal table, both the definition in Hive and the data are deleted.
+
+The following command creates an external table:
+
+CREATE EXTERNAL TABLE IF NOT EXISTS Cars(
+        Name STRING,
+        Miles_per_Gallon INT,
+        Cylinders INT,
+        Displacement INT,
+        Horsepower INT,
+        Weight_in_lbs INT,
+        Acceleration DECIMAL,
+        Year DATE,
+        Origin CHAR(1))
+    COMMENT 'Data about cars from a public database'
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    STORED AS TEXTFILE
+    location '/user/<username>/visdata';
+
+======
+
+internal table -it will delete both the table metadata as well as the table data.
+======================================
+
+create table customer_internal_table(id int, name string,age int,city string)
+row format delimited
+fields terminated by ','
+;
+
+load data local inpath 'customer_db' into table customer_internal_table;
+
+hive> drop table customer_internal_table;
+OK
+Time taken: 0.111 seconds
+hive> desc table customer_internal_table;
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/customer_internal_table
+Found 1 items
+-rwxrwxrwt   3 jayeshrasikkumaranz hive         26 2021-03-24 11:14 /user/hive/warehouse/practice1.db/customer_internal_table/customer_db
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -cat /user/hive/warehouse/practice1.db/customer_internal_table/customer_db
+756501,Jayesh,3,Bangalore
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -cat /user/hive/warehouse/practice1.db/customer_internal_table/customer_db
+cat: `/user/hive/warehouse/practice1.db/customer_internal_table/customer_db': No such file or directory
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ 
+
+=======
+
+Partition
+---------------------------------
+create a product table
+
+create table productdb(id int, userid string,pridname string,puryear int,purmonth string)
+row format delimited
+fields terminated by '|'
+;
+
+
+load data local inpath 'productdb' into table productdb;
+
+create table product_partition
+( id int,userid string,prodname string)
+   partitioned by (pur_year int,pur_mon string)
+  row format delimited 
+  fields terminated by '|';
+
+hive> desc product_partition;
+OK
+id                      int                                         
+userid                  string                                      
+prodname                string                                      
+pur_year                int                                         
+pur_mon                 string                                      
+                 
+# Partition Information          
+# col_name              data_type               comment             
+                 
+pur_year                int                                         
+pur_mon                 string                                      
+Time taken: 0.076 seconds, Fetched: 11 row(s)
+hive> 
+
+ Instruct hive to dynamically load partitions
+------------------------------------------------
+
+SET hive.exec.dynamic.partition = true;
+SET hive.exec.dynamic.partition.mode = nonstrict;
+
+Import data into partitioned table from temporary table
+-------------------------------------------------------
+
+INSERT into product_partition PARTITION (pur_year, pur_mon) select * from productdb;
+
+
+Query ID = jayeshrasikkumaranz_20210324114454_d66ed1e4-1f92-4c29-9301-485d21a0c336
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1608530820093_21996, Tracking URL = http://ip-10-0-21-131.ec2.internal:8088/proxy/application_1608530820093_21996/
+Kill Command = /opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/lib/hadoop/bin/hadoop job  -kill job_1608530820093_21996
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2021-03-24 11:45:03,864 Stage-1 map = 0%,  reduce = 0%
+2021-03-24 11:45:09,009 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.13 sec
+MapReduce Total cumulative CPU time: 2 seconds 130 msec
+Ended Job = job_1608530820093_21996
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to directory hdfs://nameservice1/user/hive/warehouse/practice1.db/product_partition/.hive-staging_hive_2021-03-24_11-44-54_499_519147814714261989-1/-ext-10000
+Loading data to table practice1.product_partition partition (pur_year=null, pur_mon=null)
+         Time taken to load dynamic partitions: 0.497 seconds
+         Time taken for adding to write entity : 0.0 seconds
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1   Cumulative CPU: 2.13 sec   HDFS Read: 4872 HDFS Write: 458 HDFS EC Read: 0 SUCCESS
+Total MapReduce CPU Time Spent: 2 seconds 130 msec
+OK
+Time taken: 16.613 seconds
+hive>  
+
+hive> select * from product_partition;
+OK
+1       A001    CAR     2011    JAN
+2       B001    BIKE    2012    JAN
+3       C001    LAPTOP  2013    FEB
+4       D001    MOBILE  2014    FEB
+5       E001    TV      2015    NOV
+Time taken: 0.213 seconds, Fetched: 5 row(s)
+hive> 
+
+select * from productdb where puryear = '2011' and purmonth = 'JAN'
+
+1       A001    CAR     2011    JAN
+Time taken: 13.49 seconds, Fetched: 1 row(s)---------------------------------------------> Execution time is high 13.49 when no partition
+
+select * from product_partition where pur_year = '2011' and pur_mon = 'JAN';
+Time taken: 0.172 seconds, Fetched: 1 row(s)------------------------------------------Exxecution time is faster
+
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/product_partition/
+Found 5 items
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2011
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2012
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2013
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2014
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2015
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/product_partition/pur_year=2011/
+Found 1 items
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2011/pur_mon=JAN
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/product_partition/pur_year=2012/
+Found 1 items
+drwxrwxrwt   - jayeshrasikkumaranz hive          0 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2012/pur_mon=JAN
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/product_partition/pur_year=2012/pur_mon=JAN
+Found 1 items
+-rwxrwxrwt   3 jayeshrasikkumaranz hive         12 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2012/pur_mon=JAN/000000_0
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -ls /user/hive/warehouse/practice1.db/product_partition/pur_year=2012/pur_mon=JAN/000000_0
+-rwxrwxrwt   3 jayeshrasikkumaranz hive         12 2021-03-24 11:45 /user/hive/warehouse/practice1.db/product_partition/pur_year=2012/pur_mon=JAN/000000_0
+[jayeshrasikkumaranz@ip-10-0-42-218 ~]$ hdfs dfs -cat /user/hive/warehouse/practice1.db/product_partition/pur_year=2012/pur_mon=JAN/000000_0
+2|B001|BIKE

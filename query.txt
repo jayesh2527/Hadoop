@@ -1,0 +1,187 @@
+create table stock16(tradingdate Date,symbol varchar(5), open double,close double, low double, high double,volume int);
+pradnya_patrike@yahoo.co.in
+
+sqoop export --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+--export-dir '/user/jayeshrasikkumaranz/simplilearn/StockPrices.csv' \
+--table stock16 -m 1 --lines-terminated-by '\n' --input-fields-terminated-by \
+',' --driver com.mysql.jdbc.Driver;
+
+sqoop export \
+--connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+--username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+--table stock11 \
+--export-dir /user/jayeshrasikkumaranz/simplilearn/StockPrices.csv
+
+sqoop export \
+ --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+ --username jayeshrasikkumaranz \
+ --password jayeshrasikkumaranzysxbp \
+ --driver com.mysql.jdbc.Driver \
+ --table stock16 -m 1 --lines-terminated-by '\n' --input-fields-terminated-by \
+ --export-dir '/user/jayeshrasikkumaranz/simplilearn/StockPrices.csv' \
+ 
+
+[jayeshrasikkumaranz@ip-10-0-41-79 ~]$ sqoop export --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+> --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+> --export-dir '/user/jayeshrasikkumaranz/simplilearn/StockPrices.csv' \
+> --table stock9 -m 1 --lines-terminated-by '\n' --input-fields-terminated-by \
+> ',' --driver com.mysql.jdbc.Driver;
+Warning: /opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/bin/../lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/jars/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/jars/log4j-slf4j-impl-2.8.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+21/04/02 14:26:42 INFO sqoop.Sqoop: Running Sqoop version: 1.4.7-cdh6.3.2
+21/04/02 14:26:42 WARN tool.BaseSqoopTool: Setting your password on the command-line is insecure. Consider using -P instead.
+21/04/02 14:26:42 WARN sqoop.ConnFactory: Parameter --driver is set to an explicit driver however appropriate connection manager is not being set (via --connection-manager). Sqoop is going to fall back to org.apache.sqoop.manager.GenericJdbcManager. Please specify explicitly which connection manager should be used next time.
+21/04/02 14:26:42 INFO manager.SqlManager: Using default fetchSize of 1000
+21/04/02 14:26:42 INFO tool.CodeGenTool: Beginning code generation
+Loading class `com.mysql.jdbc.Driver'. This is deprecated. The new driver class is `com.mysql.cj.jdbc.Driver'. The driver is automatically registered via the SPI and manual loading of the driver class is generally unnecessary.
+21/04/02 14:26:43 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM stock9 AS t WHERE 1=0
+21/04/02 14:26:43 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM stock9 AS t WHERE 1=0
+21/04/02 14:26:43 INFO orm.CompilationManager: HADOOP_MAPRED_HOME is /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce
+21/04/02 14:26:45 INFO orm.CompilationManager: Writing jar file: /tmp/sqoop-jayeshrasikkumaranz/compile/db680cf47a7950faf4c25d74c962526c/stock9.jar
+21/04/02 14:26:45 INFO mapreduce.ExportJobBase: Beginning export of stock9
+21/04/02 14:26:45 INFO Configuration.deprecation: mapred.jar is deprecated. Instead, use mapreduce.job.jar
+21/04/02 14:26:45 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM stock9 AS t WHERE 1=0
+21/04/02 14:26:45 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+21/04/02 14:26:46 INFO Configuration.deprecation: mapred.map.tasks.speculative.execution is deprecated. Instead, use mapreduce.map.speculative
+21/04/02 14:26:46 INFO Configuration.deprecation: mapred.map.tasks is deprecated. Instead, use mapreduce.job.maps
+21/04/02 14:26:46 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /user/jayeshrasikkumaranz/.staging/job_1608530820093_26283
+21/04/02 14:26:48 INFO input.FileInputFormat: Total input files to process : 1
+21/04/02 14:26:48 INFO input.FileInputFormat: Total input files to process : 1
+21/04/02 14:26:48 INFO mapreduce.JobSubmitter: number of splits:1
+21/04/02 14:26:48 INFO Configuration.deprecation: yarn.resourcemanager.zk-address is deprecated. Instead, use hadoop.zk.address
+21/04/02 14:26:48 INFO Configuration.deprecation: yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+21/04/02 14:26:48 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1608530820093_26283
+21/04/02 14:26:48 INFO mapreduce.JobSubmitter: Executing with tokens: []
+21/04/02 14:26:48 INFO conf.Configuration: resource-types.xml not found
+21/04/02 14:26:48 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+21/04/02 14:26:49 INFO impl.YarnClientImpl: Submitted application application_1608530820093_26283
+21/04/02 14:26:49 INFO mapreduce.Job: The url to track the job: http://ip-10-0-21-131.ec2.internal:8088/proxy/application_1608530820093_26283/
+21/04/02 14:26:49 INFO mapreduce.Job: Running job: job_1608530820093_26283
+21/04/02 14:26:55 INFO mapreduce.Job: Job job_1608530820093_26283 running in uber mode : false
+21/04/02 14:26:55 INFO mapreduce.Job:  map 0% reduce 0%
+21/04/02 14:27:00 INFO mapreduce.Job:  map 100% reduce 0%
+21/04/02 14:27:00 INFO mapreduce.Job: Job job_1608530820093_26283 failed with state FAILED due to: Task failed task_1608530820093_26283_m_000000
+Job failed as tasks failed. failedMaps:1 failedReduces:0 killedMaps:0 killedReduces: 0
+21/04/02 14:27:00 INFO mapreduce.Job: Counters: 8
+        Job Counters 
+                Failed map tasks=1
+                Launched map tasks=1
+               Total time spent by all reduces in occupied slots (ms)=0
+                Total time spent by all map tasks (ms)=2499
+                Total vcore-milliseconds taken by all map tasks=2499
+                Total megabyte-milliseconds taken by all map tasks=5117952
+21/04/02 14:27:00 WARN mapreduce.Counters: Group FileSystemCounters is deprecated. Use org.apache.hadoop.mapreduce.FileSystemCounter instead
+21/04/02 14:27:00 INFO mapreduce.ExportJobBase: Transferred 0 bytes in 14.22 seconds (0 bytes/sec)
+21/04/02 14:27:00 WARN mapreduce.Counters: Group org.apache.hadoop.mapred.Task$Counter is deprecated. Use org.apache.hadoop.mapreduce.TaskCounter instead
+21/04/02 14:27:00 INFO mapreduce.ExportJobBase: Exported 0 records.
+21/04/02 14:27:00 ERROR mapreduce.ExportJobBase: Export job failed!
+21/04/02 14:27:00 ERROR tool.ExportTool: Error during export: 
+Export job failed!
+        at org.apache.sqoop.mapreduce.ExportJobBase.runExport(ExportJobBase.java:444)
+        at org.apache.sqoop.manager.SqlManager.exportTable(SqlManager.java:930)
+        at org.apache.sqoop.tool.ExportTool.exportTable(ExportTool.java:93)
+        at org.apache.sqoop.tool.ExportTool.run(ExportTool.java:112)
+        at org.apache.sqoop.Sqoop.run(Sqoop.java:146)
+        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:76)
+        at org.apache.sqoop.Sqoop.runSqoop(Sqoop.java:182)
+        at org.apache.sqoop.Sqoop.runTool(Sqoop.java:233)
+        at org.apache.sqoop.Sqoop.runTool(Sqoop.java:242)
+        at org.apache.sqoop.Sqoop.main(Sqoop.java:251)
+
+
+=======
+
+
+[jayeshrasikkumaranz@ip-10-0-41-79 ~]$ sqoop export \
+> --connect jdbc:mysql://sqoopdb.slbdh.cloudlabs.com/jayeshrasikkumaranz \
+> --username jayeshrasikkumaranz --password jayeshrasikkumaranzysxbp \
+> --table stock11 \
+> --export-dir /user/jayeshrasikkumaranz/simplilearn/StockPrices.csv
+Warning: /opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/bin/../lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/jars/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/cloudera/parcels/CDH-6.3.2-1.cdh6.3.2.p0.1605554/jars/log4j-slf4j-impl-2.8.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+21/04/02 14:45:05 INFO sqoop.Sqoop: Running Sqoop version: 1.4.7-cdh6.3.2
+21/04/02 14:45:06 WARN tool.BaseSqoopTool: Setting your password on the command-line is insecure. Consider using -P instead.
+21/04/02 14:45:06 INFO manager.MySQLManager: Preparing to use a MySQL streaming resultset.
+21/04/02 14:45:06 INFO tool.CodeGenTool: Beginning code generation
+Loading class `com.mysql.jdbc.Driver'. This is deprecated. The new driver class is `com.mysql.cj.jdbc.Driver'. The driver is automatically registered via the SPI and manual loading of 
+the driver class is generally unnecessary.
+21/04/02 14:45:06 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM `stock11` AS t LIMIT 1
+21/04/02 14:45:06 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM `stock11` AS t LIMIT 1
+21/04/02 14:45:06 INFO orm.CompilationManager: HADOOP_MAPRED_HOME is /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce
+21/04/02 14:45:08 INFO orm.CompilationManager: Writing jar file: /tmp/sqoop-jayeshrasikkumaranz/compile/7e7bb710793728913c1c215db738d031/stock11.jar
+21/04/02 14:45:08 INFO mapreduce.ExportJobBase: Beginning export of stock11
+21/04/02 14:45:08 INFO Configuration.deprecation: mapred.jar is deprecated. Instead, use mapreduce.job.jar
+21/04/02 14:45:09 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+21/04/02 14:45:09 INFO Configuration.deprecation: mapred.map.tasks is deprecated. Instead, use mapreduce.job.maps
+21/04/02 14:45:09 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /user/jayeshrasikkumaranz/.staging/job_1608530820093_26291
+21/04/02 14:45:11 INFO input.FileInputFormat: Total input files to process : 1
+21/04/02 14:45:11 INFO input.FileInputFormat: Total input files to process : 1
+21/04/02 14:45:11 INFO mapreduce.JobSubmitter: number of splits:4
+21/04/02 14:45:11 INFO Configuration.deprecation: yarn.resourcemanager.zk-address is deprecated. Instead, use hadoop.zk.address
+21/04/02 14:45:11 INFO Configuration.deprecation: yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+21/04/02 14:45:11 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1608530820093_26291
+21/04/02 14:45:11 INFO mapreduce.JobSubmitter: Executing with tokens: []
+21/04/02 14:45:11 INFO conf.Configuration: resource-types.xml not found
+21/04/02 14:45:11 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+21/04/02 14:45:11 INFO impl.YarnClientImpl: Submitted application application_1608530820093_26291
+21/04/02 14:45:11 INFO mapreduce.Job: The url to track the job: http://ip-10-0-21-131.ec2.internal:8088/proxy/application_1608530820093_26291/
+21/04/02 14:45:11 INFO mapreduce.Job: Running job: job_1608530820093_26291
+21/04/02 14:45:17 INFO mapreduce.Job: Job job_1608530820093_26291 running in uber mode : false
+21/04/02 14:45:17 INFO mapreduce.Job:  map 0% reduce 0%
+21/04/02 14:45:23 INFO mapreduce.Job:  map 100% reduce 0%
+21/04/02 14:45:23 INFO mapreduce.Job: Job job_1608530820093_26291 failed with state FAILED due to: Task failed task_1608530820093_26291_m_000003
+Job failed as tasks failed. failedMaps:1 failedReduces:0 killedMaps:0 killedReduces: 0
+21/04/02 14:45:23 INFO mapreduce.Job: Counters: 12
+        Job Counters 
+                Failed map tasks=1
+                Killed map tasks=3
+                Launched map tasks=4
+                Data-local map tasks=4
+                Total time spent by all maps in occupied slots (ms)=14894
+
+21/04/02 14:45:23 INFO mapreduce.Job: Counters: 12
+        Job Counters 
+                Failed map tasks=1
+                Killed map tasks=3
+                Launched map tasks=4
+                Data-local map tasks=4
+                Total time spent by all maps in occupied slots (ms)=14894
+                Total time spent by all reduces in occupied slots (ms)=0
+                Total time spent by all map tasks (ms)=14894
+                Total vcore-milliseconds taken by all map tasks=14894
+                Total megabyte-milliseconds taken by all map tasks=30502912
+        Map-Reduce Framework
+                CPU time spent (ms)=0
+                Physical memory (bytes) snapshot=0
+                Virtual memory (bytes) snapshot=0
+21/04/02 14:45:23 WARN mapreduce.Counters: Group FileSystemCounters is deprecated. Use org.apache.hadoop.mapreduce.FileSystemCounter instead
+21/04/02 14:45:23 INFO mapreduce.ExportJobBase: Transferred 0 bytes in 14.622 seconds (0 bytes/sec)
+21/04/02 14:45:23 INFO mapreduce.ExportJobBase: Exported 0 records.
+21/04/02 14:45:23 ERROR mapreduce.ExportJobBase: Export job failed!
+21/04/02 14:45:23 ERROR tool.ExportTool: Error during export: 
+Export job failed!
+        at org.apache.sqoop.mapreduce.ExportJobBase.runExport(ExportJobBase.java:444)
+        at org.apache.sqoop.manager.SqlManager.exportTable(SqlManager.java:930)
+        at org.apache.sqoop.tool.ExportTool.exportTable(ExportTool.java:93)
+        at org.apache.sqoop.tool.ExportTool.run(ExportTool.java:112)
+        at org.apache.sqoop.Sqoop.run(Sqoop.java:146)
+        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:76)
+        at org.apache.sqoop.Sqoop.runSqoop(Sqoop.java:182)
+        at org.apache.sqoop.Sqoop.runTool(Sqoop.java:233)
+        at org.apache.sqoop.Sqoop.runTool(Sqoop.java:242)
+        at org.apache.sqoop.Sqoop.main(Sqoop.java:251)
+
+==
+
+sqoop export --connect jdbc:mysql://localhost/employees --username edureka --table emp --export-dir /user/edureka/employees
